@@ -1,0 +1,71 @@
+//# -*- encoding: utf-8 -*-
+brigen base libraries
+License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  2013.10.23 brigen
+
+I represent the Acknowledgements
+  diverted the source code of the following
+
+  - com.brightgenerous.commons.delegate.org$apache$commons$lang3$StringUtils
+      from
+        groupId: org.apache.commons
+        artifactId: commons-lang3
+        version: 3.1
+          org.apache.commons.lang3.StringUtils
+        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  - com.brightgenerous.commons.delegate.org$apache$commons$lang3$DateUtils
+      from
+        groupId: org.apache.commons
+        artifactId: commons-lang3
+        version: 3.1
+          org.apache.commons.lang3.time.DateUtils
+        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  - com.brightgenerous.lucene.delegate.org$apache$lucene$search$spell$StringDistance
+      from
+        groupId: org.apache.lucene
+        artifactId: lucene-spellchecker
+        version: 3.6.2
+          org.apache.lucene.search.spell.StringDistance
+        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  - com.brightgenerous.lucene.delegate.org$apache$lucene$search$spell$LevensteinDistance
+      from
+        groupId: org.apache.lucene
+        artifactId: lucene-spellchecker
+        version: 3.6.2
+          org.apache.lucene.search.spell.LevensteinDistance
+        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  - com.brightgenerous.lucene.delegate.org$apache$lucene$search$spell$JaroWinklerDistance
+      from
+        groupId: org.apache.lucene
+        artifactId: lucene-spellchecker
+        version: 3.6.2
+          org.apache.lucene.search.spell.JaroWinklerDistance
+        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  - com.brightgenerous.injection.mybatis.TransactionalMethodInterceptor
+      from
+       groupId: org.mybatis
+       artifactId: mybatis-guice
+       version: 3.5
+         org.mybatis.guice.transactional.TransactionalMethodInterceptor
+        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+
+usage
+
+  please see each Test code.
+    - src/test/java/.../*Test.java
+    - src/test/resources/.../*
+
+
+--
+I also welcome correction of English.
+英語の添削も歓迎します。
+
+BrightGenerous
+

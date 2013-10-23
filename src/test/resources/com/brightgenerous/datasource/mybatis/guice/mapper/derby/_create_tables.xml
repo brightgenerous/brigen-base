@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+	<tables>
+		<table>
+			<create>
+create table t_header (
+	header_no BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
+	header_value VARCHAR(255),
+	constraint pkey_t_header primary key (header_no)
+)
+			</create>
+			<drop>
+drop table t_header
+			</drop>
+		</table>
+		<table>
+			<create>
+create table t_multi_key_detail (
+	header_no BIGINT NOT NULL,
+	detail_no BIGINT NOT NULL,
+	detail_value VARCHAR(255),
+	constraint pkey_t_multi_key_detail primary key (header_no, detail_no),
+	constraint fkey_t_multi_key_detail_1 foreign key (header_no)
+		references t_header (header_no)
+)
+			</create>
+			<drop>
+drop table t_multi_key_detail
+			</drop>
+		</table>
+		<table>
+			<create>
+create table t_simple_key_detail (
+	header_no BIGINT NOT NULL,
+	detail_no BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
+	detail_value VARCHAR(255),
+	constraint pkey_t_simple_key_detail primary key (detail_no),
+	constraint fkey_t_simple_key_detail_1 foreign key (header_no)
+		references t_header (header_no)
+)
+			</create>
+			<drop>
+drop table t_simple_key_detail
+			</drop>
+		</table>
+	</tables>
+</root>

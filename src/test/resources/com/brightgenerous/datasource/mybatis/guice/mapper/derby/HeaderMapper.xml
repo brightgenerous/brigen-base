@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.brightgenerous.datasource.mybatis.guice.mapper.derby.HeaderMapper">
+
+	<select id="selectSize" resultType="long">
+		<bind name="methods" value="@com.brightgenerous.orm.mapper.MapperMethods@get('t_header')" />
+		<bind name="propertys" value="condition.forUpdate ? {} : {}" />
+
+		select
+			count(*)
+
+		<include refid="sqlFromWhere" />
+	</select>
+
+	<select id="selectAll" resultType="Header">
+		<bind name="methods" value="@com.brightgenerous.orm.mapper.MapperMethods@get('t_header')" />
+		<bind name="propertys" value="condition.forUpdate ? {} : {}" />
+
+		select
+			<foreach index="key" item="column" separator=","
+					collection="methods.filterSelects(propertys)">
+				${column} as "${key}"
+			</foreach>
+
+		<include refid="sqlFromWhere" />
+
+		<trim prefix="order by">
+			<foreach index="key" item="asc" separator=","
+					collection="methods.filterSorts(condition.sorts, propertys)">
+				${key}
+				<choose>
+					<when test="asc">asc</when>
+					<otherwise>desc</otherwise>
+				</choose>
+			</foreach>
+		</trim>
+
+		<if test="condition.offset neq null">
+			offset ${condition.offset} rows
+		</if>
+		<if test="condition.limit neq null">
+			fetch next ${condition.limit} rows only
+		</if>
+
+		<if test="condition.forUpdate">
+			for update
+		</if>
+	</select>
+
+	<sql id="sqlFromWhere">
+		from
+			t_header
+
+		<where>
+			<foreach index="key" item="field"
+					collection="methods.filterFields(condition.fields, propertys)">
+				<if test="field.value neq null">
+					and ${key} = #{field.value}
+				</if>
+				<if test="field.notValue neq null">
+					and ${key} &lt;&gt; #{field.notValue}
+				</if>
+				<if test="field.isNull">
+					and ${key} is null
+				</if>
+				<if test="field.isNotNull">
+					and ${key} is not null
+				</if>
+				<if test="field.prefixValue neq null">
+					and ${key} like #{field.prefixValue} || '%'
+				</if>
+				<if test="field.notPrefixValue neq null">
+					and ${key} not like #{field.notPrefixValue} || '%'
+				</if>
+				<if test="field.suffixValue neq null">
+					and ${key} like '%' || #{field.suffixValue}
+				</if>
+				<if test="field.notSuffixValue neq null">
+					and ${key} not like '%' || #{field.notSuffixValue}
+				</if>
+				<if test="field.broadValue neq null">
+					and ${key} like '%' || #{field.broadValue} || '%'
+				</if>
+				<if test="field.notBroadValue neq null">
+					and ${key} not like '%' || #{field.notBroadValue} || '%'
+				</if>
+				<if test="field.lowerThanValue neq null">
+					and ${key} &lt; #{field.lowerThanValue}
+				</if>
+				<if test="field.lowerEqualValue neq null">
+					and ${key} &lt;= #{field.lowerEqualValue}
+				</if>
+				<if test="field.greaterThanValue neq null">
+					and ${key} &gt; #{field.greaterThanValue}
+				</if>
+				<if test="field.greaterEqualValue neq null">
+					and ${key} &gt;= #{field.greaterEqualValue}
+				</if>
+			</foreach>
+		</where>
+	</sql>
+
+	<insert id="insert" parameterType="Header">
+		<selectKey keyProperty="headerNo" resultType="Long" order="AFTER">
+			select max(identity_val_local()) from t_header
+		</selectKey>
+		insert into
+			t_header (
+				header_value
+			) values (
+				#{headerValue, jdbcType=VARCHAR}
+			)
+	</insert>
+
+	<update id="update" parameterType="Header">
+		update
+			t_header
+		set
+			header_value = #{headerValue, jdbcType=VARCHAR}
+		where
+			header_no = #{headerNo, jdbcType=BIGINT}
+	</update>
+
+	<delete id="delete" parameterType="Header">
+		delete from
+			t_header
+		where
+			header_no = #{headerNo, jdbcType=BIGINT}
+	</delete>
+
+</mapper>
