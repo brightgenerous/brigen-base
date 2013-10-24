@@ -53,7 +53,7 @@ I represent the Acknowledgements
        artifactId: mybatis-guice
        version: 3.5
          org.mybatis.guice.transactional.TransactionalMethodInterceptor
-        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+       License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 
 usage
@@ -61,6 +61,21 @@ usage
   please see each Test code.
     - src/test/java/.../*Test.java
     - src/test/resources/.../*
+
+    pick up on the following
+
+      - com.brightgenerous.cglib.CglibUtilsTest           : create interface in dynamic. using cglib
+      - com.brightgenerous.commons.EqualsUtilsTest        : equals method utility. using apache-commmons-lang
+      - com.brightgenerous.commons.HashCodeUtilsTest      : hashCode method utility. using apache-commmons-lang
+      - com.brightgenerous.commons.StringConvertUtilsTest : string converter.
+      - com.brightgenerous.commons.StringUnicodeUtilsTest : unicode(code point) string utility.
+      - com.brightgenerous.commons.crypto.CryptoUtilsTest : encrypt and decrypt utility.
+      - com.brightgenerous.datasource.DataSourceTest      : transaction method proxy and persistence library. using guice, mybatis and derby(for test)
+          with - com.brightgenerous.datasource...
+      - com.brightgenerous.json.JsonUtilsTest             : json utility. using gson, jackson, jsonic
+      - com.brightgenerous.lang.PropertyBundleBuilderTest : inherited property bundle utility.
+      - com.brightgenerous.lucene.LuceneUtilsTest         : ambiguous text search utility. using lucene
+      - com.brightgenerous.poi.PoiTest                    : excel utility. using poi
 
 
 --

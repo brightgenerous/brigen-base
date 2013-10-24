@@ -4,10 +4,13 @@ import java.io.Serializable;
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.brightgenerous.lang.Args;
@@ -444,6 +447,57 @@ public class LuceneUtils implements Serializable {
         return ret;
     }
 
+    public Comparator<String> comparator(String value) {
+        return comparator(value, levenstein, jaroWinkler);
+    }
+
+    public static Comparator<String> comparatorLevenstein(String value) {
+        return comparator(value, true, false);
+    }
+
+    public static Comparator<String> comparatorJaroWinkler(String value) {
+        return comparator(value, false, true);
+    }
+
+    public static Comparator<String> comparatorBoth(String value) {
+        return comparator(value, true, true);
+    }
+
+    private static Comparator<String> comparator(String value, boolean levenstein,
+            boolean jaroWinkler) {
+        Args.notNull(value, "value");
+        Args.isTrue(levenstein || jaroWinkler, "(levenstein || jaroWinkler) must be true.");
+
+        return new StringComparator(value, levenstein, jaroWinkler);
+    }
+
+    public <T> Comparator<T> comparator(String value, Extracter<T> extracter) {
+        return comparator(value, extracter, levenstein, jaroWinkler);
+    }
+
+    public static <T> Comparator<T> comparatorLevenstein(String value, Extracter<T> extracter) {
+        return comparator(value, extracter, true, false);
+    }
+
+    public static <T> Comparator<T> comparatorJaroWinkler(String value, Extracter<T> extracter) {
+        return comparator(value, extracter, false, true);
+    }
+
+    public static <T> Comparator<T> comparatorBoth(String value, Extracter<T> extracter) {
+        return comparator(value, extracter, true, true);
+    }
+
+    private static <T> Comparator<T> comparator(String value, Extracter<T> extracter,
+            boolean levenstein, boolean jaroWinkler) {
+        Args.notNull(value, "value");
+        Args.isTrue(levenstein || jaroWinkler, "(levenstein || jaroWinkler) must be true.");
+
+        if (extracter == null) {
+            extracter = getDefaultExtracter();
+        }
+        return new ExtractComparator<>(value, extracter, levenstein, jaroWinkler);
+    }
+
     private static <T> Extracter<T> getDefaultExtracter() {
         return new Extracter<T>() {
 
@@ -460,9 +514,9 @@ public class LuceneUtils implements Serializable {
         };
     }
 
-    private static transient StringDistanceDelegater ld;
+    private static volatile StringDistanceDelegater ld;
 
-    private static transient StringDistanceDelegater jd;
+    private static volatile StringDistanceDelegater jd;
 
     private static double getDistance(String obj, String value, boolean levenstein,
             boolean jaroWinkler) {
@@ -487,5 +541,128 @@ public class LuceneUtils implements Serializable {
             return jd.getDistance(obj, value);
         }
         throw new IllegalStateException();
+    }
+
+    static class StringComparator implements Comparator<String> {
+
+        private final String value;
+
+        private final boolean levenstein;
+
+        private final boolean jaroWinkler;
+
+        private final Map<String, Double> cache = Collections
+                .synchronizedMap(new WeakHashMap<String, Double>());
+
+        public StringComparator(String value, boolean levenstein, boolean jaroWinkler) {
+            this.value = value;
+            this.levenstein = levenstein;
+            this.jaroWinkler = jaroWinkler;
+        }
+
+        @Override
+        public int compare(String o1, String o2) {
+            double d1 = distance(o1);
+            double d2 = distance(o2);
+            // between 0 ... 1.0, correct closer to 1.0
+            if (d1 == d2) {
+                if (o1 == o2) {
+                    return 0;
+                }
+                if (o1 == null) {
+                    return -1;
+                }
+                if (o2 == null) {
+                    return 1;
+                }
+                return o1.compareTo(o2);
+            }
+            if (d1 < d2) {
+                return 1;
+            }
+            return -1;
+        }
+
+        private double distance(String obj) {
+            Double ret = cache.get(obj);
+            if (ret == null) {
+                synchronized (cache) {
+                    ret = cache.get(obj);
+                    if (ret == null) {
+                        ret = Double.valueOf(getDistance(obj, value, levenstein, jaroWinkler));
+                        cache.put(obj, ret);
+                    }
+                }
+            }
+            return ret.doubleValue();
+        }
+    }
+
+    static class ExtractComparator<T> implements Comparator<T> {
+
+        private final String value;
+
+        private final Extracter<T> extracter;
+
+        private final boolean levenstein;
+
+        private final boolean jaroWinkler;
+
+        private final Map<T, Holder> cache = Collections
+                .synchronizedMap(new WeakHashMap<T, Holder>());
+
+        public ExtractComparator(String value, Extracter<T> extracter, boolean levenstein,
+                boolean jaroWinkler) {
+            this.value = value;
+            this.extracter = extracter;
+            this.levenstein = levenstein;
+            this.jaroWinkler = jaroWinkler;
+        }
+
+        @Override
+        public int compare(T o1, T o2) {
+            Holder h1 = distance(o1);
+            Holder h2 = distance(o2);
+            // between 0 ... 1.0, correct closer to 1.0
+            if (h1.distance == h2.distance) {
+                if (h1.value == h2.value) {
+                    return 0;
+                }
+                if (h1.value == null) {
+                    return -1;
+                }
+                if (h2.value == null) {
+                    return 1;
+                }
+                return h1.value.compareTo(h2.value);
+            }
+            if (h1.distance < h2.distance) {
+                return 1;
+            }
+            return -1;
+        }
+
+        private Holder distance(T obj) {
+            Holder ret = cache.get(obj);
+            if (ret == null) {
+                synchronized (cache) {
+                    ret = cache.get(obj);
+                    if (ret == null) {
+                        ret = new Holder();
+                        ret.value = extracter.extract(obj);
+                        ret.distance = getDistance(ret.value, value, levenstein, jaroWinkler);
+                        cache.put(obj, ret);
+                    }
+                }
+            }
+            return ret;
+        }
+
+        static class Holder {
+
+            double distance;
+
+            String value;
+        }
     }
 }
