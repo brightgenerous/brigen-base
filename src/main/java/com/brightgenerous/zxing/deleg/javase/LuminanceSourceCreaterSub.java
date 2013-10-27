@@ -7,7 +7,6 @@ import javax.imageio.ImageIO;
 import com.brightgenerous.zxing.DecodeArguments;
 import com.brightgenerous.zxing.javase.BufferedImageDecodeArguments;
 import com.google.zxing.LuminanceSource;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 
 class LuminanceSourceCreaterSub implements LuminanceSourceCreater {
 
