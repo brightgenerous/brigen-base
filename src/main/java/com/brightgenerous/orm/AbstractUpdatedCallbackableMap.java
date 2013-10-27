@@ -195,7 +195,7 @@ abstract class AbstractUpdatedCallbackableMap<K extends Serializable, V extends 
 
     @Override
     public int hashCode() {
-        if (HashCodeUtils.useful()) {
+        if (HashCodeUtils.resolved()) {
             return HashCodeUtils.hashCodeAlt(null, this);
         }
         return super.hashCode();
@@ -203,7 +203,7 @@ abstract class AbstractUpdatedCallbackableMap<K extends Serializable, V extends 
 
     @Override
     public boolean equals(Object obj) {
-        if (EqualsUtils.useful()) {
+        if (EqualsUtils.resolved()) {
             return EqualsUtils.equalsAlt(null, this, obj);
         }
         return super.equals(obj);
@@ -211,7 +211,7 @@ abstract class AbstractUpdatedCallbackableMap<K extends Serializable, V extends 
 
     @Override
     public String toString() {
-        if (ToStringUtils.useful()) {
+        if (ToStringUtils.resolved()) {
             return ToStringUtils.toStringAlt(this);
         }
         return super.toString();

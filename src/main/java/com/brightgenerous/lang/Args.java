@@ -3,8 +3,6 @@ package com.brightgenerous.lang;
 import java.io.Serializable;
 import java.util.Collection;
 
-import com.brightgenerous.commons.StringUtils;
-
 public class Args {
 
     private Args() {
@@ -18,7 +16,7 @@ public class Args {
     }
 
     public static <T extends CharSequence> T notEmpty(T argument, String name) {
-        if (StringUtils.isEmpty(argument)) {
+        if ((argument == null) || (argument.length() < 1)) {
             throw new IllegalArgumentException("Argument '" + name + "' may not be null or empty.");
         }
         return argument;

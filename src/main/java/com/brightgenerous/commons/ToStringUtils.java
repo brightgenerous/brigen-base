@@ -7,8 +7,8 @@ import com.brightgenerous.commons.delegate.ToStringUtility;
 @SuppressWarnings("deprecation")
 public class ToStringUtils {
 
-    public static boolean useful() {
-        return ToStringUtility.USEFUL;
+    public static boolean resolved() {
+        return ToStringUtility.RESOLVED;
     }
 
     private ToStringUtils() {

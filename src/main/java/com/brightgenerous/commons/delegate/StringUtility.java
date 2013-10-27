@@ -8,16 +8,16 @@ public class StringUtility {
 
     private static final Logger log = Logger.getAnonymousLogger();
 
-    public static final boolean USEFUL;
+    public static final boolean RESOLVED;
 
     private static final StringDelegater delegater;
 
     static {
         StringDelegater tmp = null;
-        boolean useful = false;
+        boolean resolved = false;
         try {
             tmp = new StringDelegaterImpl();
-            useful = true;
+            resolved = true;
         } catch (NoClassDefFoundError | RuntimeException e) {
 
             if (log.isLoggable(Level.INFO)) {
@@ -34,7 +34,7 @@ public class StringUtility {
         if (tmp == null) {
             tmp = new StringDelegaterSub();
         }
-        USEFUL = useful;
+        RESOLVED = resolved;
         delegater = tmp;
     }
 

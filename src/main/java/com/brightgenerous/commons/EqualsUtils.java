@@ -9,8 +9,8 @@ import com.brightgenerous.commons.delegate.EqualsUtility;
 @SuppressWarnings("deprecation")
 public class EqualsUtils {
 
-    public static boolean useful() {
-        return EqualsUtility.USEFUL;
+    public static boolean resolved() {
+        return EqualsUtility.RESOLVED;
     }
 
     private EqualsUtils() {

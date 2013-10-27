@@ -10,16 +10,16 @@ public class JxlUtility {
 
     private static final Logger log = Logger.getAnonymousLogger();
 
-    public static final boolean USEFUL;
+    public static final boolean RESOLVED;
 
     private static final JxlDelegater delegater;
 
     static {
         JxlDelegater tmp = null;
-        boolean useful = false;
+        boolean resolved = false;
         try {
             tmp = new JxlDelegaterImpl();
-            useful = true;
+            resolved = true;
         } catch (NoClassDefFoundError | RuntimeException e) {
 
             if (log.isLoggable(Level.INFO)) {
@@ -36,7 +36,7 @@ public class JxlUtility {
         if (tmp == null) {
             tmp = new JxlDelegaterSub();
         }
-        USEFUL = useful;
+        RESOLVED = resolved;
         delegater = tmp;
     }
 

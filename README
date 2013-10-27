@@ -55,6 +55,30 @@ I represent the Acknowledgements
          org.mybatis.guice.transactional.TransactionalMethodInterceptor
        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+  - com.brightgenerous.zxing.deleg.javase.com$google$zxing$client$j2se$BufferedImageLuminanceSource
+      from
+       groupId: com.google.zxing
+       artifactId: javase
+       version: 2.2
+         com.google.zxing.client.j2se.BufferedImageLuminanceSource
+       License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  - com.brightgenerous.zxing.deleg.javase.com$google$zxing$client$j2se$MatrixToImageConfig
+      from
+       groupId: com.google.zxing
+       artifactId: javase
+       version: 2.2
+         com.google.zxing.client.j2se.MatrixToImageConfig
+       License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  - com.brightgenerous.zxing.deleg.javase.com$google$zxing$client$j2se$MatrixToImageWriter
+      from
+       groupId: com.google.zxing
+       artifactId: javase
+       version: 2.2
+         com.google.zxing.client.j2se.MatrixToImageWriter
+       License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 
 usage
 
@@ -64,18 +88,31 @@ usage
 
     pick up on the following
 
-      - com.brightgenerous.cglib.CglibUtilsTest           : create interface in dynamic. using cglib
-      - com.brightgenerous.commons.EqualsUtilsTest        : equals method utility. using apache-commmons-lang
-      - com.brightgenerous.commons.HashCodeUtilsTest      : hashCode method utility. using apache-commmons-lang
-      - com.brightgenerous.commons.StringConvertUtilsTest : string converter.
-      - com.brightgenerous.commons.StringUnicodeUtilsTest : unicode(code point) string utility.
-      - com.brightgenerous.commons.crypto.CryptoUtilsTest : encrypt and decrypt utility.
-      - com.brightgenerous.datasource.DataSourceTest      : transaction method proxy and persistence library. using guice, mybatis and derby(for test)
+      - com.brightgenerous.cglib.CglibUtilsTest
+              : create interface in dynamic. using cglib
+      - com.brightgenerous.commons.EqualsUtilsTest
+              : equals method utility. using apache-commmons-lang
+      - com.brightgenerous.commons.HashCodeUtilsTest
+              : hashCode method utility. using apache-commmons-lang
+      - com.brightgenerous.commons.StringConvertUtilsTest
+              : string converter.
+      - com.brightgenerous.commons.StringUnicodeUtilsTest
+              : unicode(code point) string utility.
+      - com.brightgenerous.commons.crypto.CryptoUtilsTest
+              : encrypt and decrypt utility.
+      - com.brightgenerous.datasource.DataSourceTest
           with - com.brightgenerous.datasource...
-      - com.brightgenerous.json.JsonUtilsTest             : json utility. using gson, jackson, jsonic
-      - com.brightgenerous.lang.PropertyBundleBuilderTest : inherited property bundle utility.
-      - com.brightgenerous.lucene.LuceneUtilsTest         : ambiguous text search utility. using lucene
-      - com.brightgenerous.poi.PoiTest                    : excel utility. using poi
+              : transaction method proxy and persistence library. using guice, mybatis and derby(for test)
+      - com.brightgenerous.json.JsonUtilsTest
+              : json utility. using gson, jackson, jsonic
+      - com.brightgenerous.lang.PropertyBundleBuilderTest
+       : inherited property bundle utility.
+      - com.brightgenerous.lucene.LuceneUtilsTest
+              : ambiguous text search utility. using lucene
+      - com.brightgenerous.poi.PoiTest
+              : excel utility. using poi
+      - com.brightgenerous.zxing.ZxingTest
+              : qrcode, barcode utility. using zxing
 
 
 --

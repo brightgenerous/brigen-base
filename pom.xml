@@ -55,6 +55,8 @@
     <jsonic.version>[1.3.0,2.0)</jsonic.version>
     <jackson.version>[1.9.11,2.0)</jackson.version>
 
+    <zxing.version>[2.2,3)</zxing.version>
+
     <guice.version>3.0</guice.version>
     <mybatis.version>[3.2.3,4.0)</mybatis.version>
     <mybatis-guice.version>[3.5,4.0)</mybatis-guice.version>
@@ -62,6 +64,8 @@
     <commons-dbcp.version>[1.4,2.0)</commons-dbcp.version>
     <cglib.version>[2.2.2,3.0)</cglib.version>
     <derby.version>[10.10.1.1,11.0)</derby.version>
+
+    <android.version>[4.1.1.4,5)</android.version>
 
     <jetty.version>[7.6.12.v20130726,8.0)</jetty.version>
 
@@ -179,6 +183,20 @@
       <optional>true</optional>
     </dependency>
 
+    <!-- ZXING DEPENDENCIES -->
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>core</artifactId>
+      <version>${zxing.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>javase</artifactId>
+      <version>${zxing.version}</version>
+      <optional>true</optional>
+    </dependency>
+
     <!-- GUICE DEPENDENCIES -->
     <dependency>
       <groupId>com.google.inject</groupId>
@@ -231,6 +249,13 @@
       <artifactId>derby</artifactId>
       <version>${derby.version}</version>
       <scope>test</scope>
+    </dependency>
+
+    <!-- ANDROID DEPENDENCIES -->
+    <dependency>
+      <groupId>com.google.android</groupId>
+      <artifactId>android</artifactId>
+      <version>${android.version}</version>
     </dependency>
 
     <!-- JETTY DEPENDENCIES -->

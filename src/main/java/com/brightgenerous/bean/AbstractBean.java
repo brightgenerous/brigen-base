@@ -39,21 +39,21 @@ public abstract class AbstractBean implements Serializable {
         return true;
     }
 
-    protected boolean useHashCodeImpl() {
+    protected boolean useHashCodeImplIfResolved() {
         return false;
     }
 
-    protected boolean useEqualsImpl() {
+    protected boolean useEqualsImplIfResolved() {
         return false;
     }
 
-    protected boolean useToStringImpl() {
+    protected boolean useToStringImplIfResolved() {
         return false;
     }
 
     @Override
     public int hashCode() {
-        if (useHashCodeImpl() && HashCodeUtils.useful()) {
+        if (useHashCodeImplIfResolved() && HashCodeUtils.resolved()) {
             return HashCodeUtils.hashCodeAlt(null, this);
         }
         return super.hashCode();
@@ -61,7 +61,7 @@ public abstract class AbstractBean implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (useEqualsImpl() && EqualsUtils.useful()) {
+        if (useEqualsImplIfResolved() && EqualsUtils.resolved()) {
             return EqualsUtils.equalsAlt(null, this, obj);
         }
         return super.equals(obj);
@@ -69,7 +69,7 @@ public abstract class AbstractBean implements Serializable {
 
     @Override
     public String toString() {
-        if (useToStringImpl() && ToStringUtils.useful()) {
+        if (useToStringImplIfResolved() && ToStringUtils.resolved()) {
             return ToStringUtils.toStringAlt(this);
         }
         return super.toString();

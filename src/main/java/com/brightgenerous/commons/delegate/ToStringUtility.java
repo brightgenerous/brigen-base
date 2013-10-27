@@ -9,16 +9,16 @@ public class ToStringUtility {
 
     private static final Logger log = Logger.getAnonymousLogger();
 
-    public static final boolean USEFUL;
+    public static final boolean RESOLVED;
 
     private static final ToStringDelegater delegater;
 
     static {
         ToStringDelegater tmp = null;
-        boolean useful = false;
+        boolean resolved = false;
         try {
             tmp = new ToStringDelegaterImpl();
-            useful = true;
+            resolved = true;
         } catch (NoClassDefFoundError | RuntimeException e) {
 
             if (log.isLoggable(Level.INFO)) {
@@ -32,7 +32,7 @@ public class ToStringUtility {
                 }
             }
         }
-        USEFUL = useful;
+        RESOLVED = resolved;
         delegater = tmp;
     }
 
@@ -44,8 +44,8 @@ public class ToStringUtility {
             return null;
         }
         if (mh == null) {
-            return String.format("%s@%d", obj.getClass().getSimpleName(),
-                    Integer.valueOf(obj.hashCode()));
+            return String.format("%s@%s", obj.getClass().getName(),
+                    Integer.toHexString(obj.hashCode()));
         }
         try {
             return (String) mh.invoke(obj);

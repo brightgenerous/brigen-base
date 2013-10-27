@@ -118,7 +118,7 @@ public class InjectorConfig implements Serializable {
 
     @Override
     public int hashCode() {
-        if (HashCodeUtils.useful()) {
+        if (HashCodeUtils.resolved()) {
             return HashCodeUtils.hashCodeAlt(null, this);
         }
         return super.hashCode();
@@ -126,7 +126,7 @@ public class InjectorConfig implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (EqualsUtils.useful()) {
+        if (EqualsUtils.resolved()) {
             return EqualsUtils.equalsAlt(null, this, obj);
         }
         return super.equals(obj);
@@ -134,7 +134,7 @@ public class InjectorConfig implements Serializable {
 
     @Override
     public String toString() {
-        if (ToStringUtils.useful()) {
+        if (ToStringUtils.resolved()) {
             return ToStringUtils.toStringAlt(this);
         }
         return super.toString();

@@ -13,16 +13,16 @@ public class EqualsUtility {
 
     private static final Logger log = Logger.getAnonymousLogger();
 
-    public static final boolean USEFUL;
+    public static final boolean RESOLVED;
 
     private static final EqualsDelegater delegater;
 
     static {
         EqualsDelegater tmp = null;
-        boolean useful = false;
+        boolean resolved = false;
         try {
             tmp = new EqualsDelegaterImpl();
-            useful = true;
+            resolved = true;
         } catch (NoClassDefFoundError | RuntimeException e) {
 
             if (log.isLoggable(Level.INFO)) {
@@ -36,7 +36,7 @@ public class EqualsUtility {
                 }
             }
         }
-        USEFUL = useful;
+        RESOLVED = resolved;
         delegater = tmp;
     }
 

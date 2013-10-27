@@ -8,16 +8,16 @@ public class LuceneUtility {
 
     private static final Logger log = Logger.getAnonymousLogger();
 
-    public static final boolean USEFUL;
+    public static final boolean RESOLVED;
 
     private static final LuceneDelegater delegater;
 
     static {
         LuceneDelegater tmp = null;
-        boolean useful = false;
+        boolean resolved = false;
         try {
             tmp = new LuceneDelegaterImpl();
-            useful = true;
+            resolved = true;
         } catch (NoClassDefFoundError | RuntimeException e) {
 
             if (log.isLoggable(Level.INFO)) {
@@ -34,7 +34,7 @@ public class LuceneUtility {
         if (tmp == null) {
             tmp = new LuceneDelegaterSub();
         }
-        USEFUL = useful;
+        RESOLVED = resolved;
         delegater = tmp;
     }
 

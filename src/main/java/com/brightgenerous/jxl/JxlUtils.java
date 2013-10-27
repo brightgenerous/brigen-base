@@ -13,15 +13,15 @@ import com.brightgenerous.lang.Args;
 @Deprecated
 public class JxlUtils {
 
-    public static boolean useful() {
-        return JxlUtility.USEFUL;
+    public static boolean resolved() {
+        return JxlUtility.RESOLVED;
     }
 
     private JxlUtils() {
     }
 
     public static boolean canWrap() {
-        return useful();
+        return resolved();
     }
 
     public static InputStream wrap(byte[] bytes) throws IOException {

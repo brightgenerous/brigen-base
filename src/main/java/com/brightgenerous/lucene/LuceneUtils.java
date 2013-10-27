@@ -22,8 +22,8 @@ public class LuceneUtils implements Serializable {
 
     private static final long serialVersionUID = -5768707421292489384L;
 
-    public static boolean useful() {
-        return LuceneUtility.USEFUL;
+    public static boolean resolved() {
+        return LuceneUtility.RESOLVED;
     }
 
     static class InstanceKey implements Serializable {

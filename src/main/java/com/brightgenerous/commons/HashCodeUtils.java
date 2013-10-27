@@ -9,8 +9,8 @@ import com.brightgenerous.commons.delegate.HashCodeUtility;
 @SuppressWarnings("deprecation")
 public class HashCodeUtils {
 
-    public static boolean useful() {
-        return HashCodeUtility.USEFUL;
+    public static boolean resolved() {
+        return HashCodeUtility.RESOLVED;
     }
 
     private HashCodeUtils() {

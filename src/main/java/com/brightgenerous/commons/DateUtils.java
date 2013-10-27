@@ -9,8 +9,8 @@ import com.brightgenerous.commons.delegate.DateUtility;
 @SuppressWarnings("deprecation")
 public class DateUtils {
 
-    public static boolean useful() {
-        return DateUtility.USEFUL;
+    public static boolean resolved() {
+        return DateUtility.RESOLVED;
     }
 
     private DateUtils() {

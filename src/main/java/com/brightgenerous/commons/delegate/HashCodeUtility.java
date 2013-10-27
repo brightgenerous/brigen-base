@@ -13,16 +13,16 @@ public class HashCodeUtility {
 
     private static final Logger log = Logger.getAnonymousLogger();
 
-    public static final boolean USEFUL;
+    public static final boolean RESOLVED;
 
     private static final HashCodeDelegater delegater;
 
     static {
         HashCodeDelegater tmp = null;
-        boolean useful = false;
+        boolean resolved = false;
         try {
             tmp = new HashCodeDelegaterImpl();
-            useful = true;
+            resolved = true;
         } catch (NoClassDefFoundError | RuntimeException e) {
 
             if (log.isLoggable(Level.INFO)) {
@@ -36,7 +36,7 @@ public class HashCodeUtility {
                 }
             }
         }
-        USEFUL = useful;
+        RESOLVED = resolved;
         delegater = tmp;
     }
 

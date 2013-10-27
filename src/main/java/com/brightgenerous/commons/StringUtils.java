@@ -5,8 +5,8 @@ import com.brightgenerous.commons.delegate.StringUtility;
 @SuppressWarnings("deprecation")
 public class StringUtils {
 
-    public static boolean useful() {
-        return StringUtility.USEFUL;
+    public static boolean resolved() {
+        return StringUtility.RESOLVED;
     }
 
     public static final String EMPTY = StringUtility.EMPTY;
