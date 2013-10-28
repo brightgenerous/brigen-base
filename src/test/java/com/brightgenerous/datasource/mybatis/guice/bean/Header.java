@@ -3,6 +3,7 @@ package com.brightgenerous.datasource.mybatis.guice.bean;
 import java.util.List;
 
 import com.brightgenerous.bean.AbstractBean;
+import com.brightgenerous.orm.Ignore;
 
 public class Header extends AbstractBean {
 
@@ -12,6 +13,9 @@ public class Header extends AbstractBean {
     private Long headerNo;
 
     private String headerValue;
+
+    @Ignore
+    private String ignore;
 
     @Fill
     private List<MultiKeyDetail> multiKeyDetails;
@@ -33,6 +37,14 @@ public class Header extends AbstractBean {
 
     public void setHeaderValue(String headerValue) {
         this.headerValue = headerValue;
+    }
+
+    public String getIgnore() {
+        return ignore;
+    }
+
+    public void setIgnore(String ignore) {
+        this.ignore = ignore;
     }
 
     public List<MultiKeyDetail> getMultiKeyDetails() {

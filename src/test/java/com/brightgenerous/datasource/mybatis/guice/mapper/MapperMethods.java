@@ -8,6 +8,8 @@ import java.util.Map;
 import com.brightgenerous.datasource.mybatis.guice.bean.Header;
 import com.brightgenerous.datasource.mybatis.guice.bean.MultiKeyDetail;
 import com.brightgenerous.datasource.mybatis.guice.bean.SimpleKeyDetail;
+import com.brightgenerous.orm.mapper.MapperUtils.FieldColumn;
+import com.brightgenerous.orm.mapper.MapperUtils.PropertyReference;
 import com.brightgenerous.orm.mapper.Register;
 import com.brightgenerous.orm.mapper.TableDefines;
 
@@ -50,13 +52,11 @@ public class MapperMethods extends com.brightgenerous.orm.mapper.MapperMethods {
 
             load(register, MultiKeyDetail.class,
                     "t_multi_key_detail",
-                    new String[][] {
-                        { "header.headerNo", "header_no" } });
+                    FieldColumn.create("header.headerNo", "header_no"));
 
             load(register, SimpleKeyDetail.class,
                     "t_simple_key_detail",
-                    new String[][] {
-                        { "header.headerNo", "header_no" } });
+                    FieldColumn.create("header.headerNo", "header_no"));
         }
 
         {
@@ -80,13 +80,11 @@ public class MapperMethods extends com.brightgenerous.orm.mapper.MapperMethods {
 
             define(defines, register,
                     "t_multi_key_detail",
-                    new String[][] {
-                        { "header", "t_header" }});
+                    PropertyReference.create("header", "t_header"));
 
             define(defines, register,
                     "t_simple_key_detail",
-                    new String[][] {
-                        { "header", "t_header" }});
+                    PropertyReference.create("header", "t_header"));
         }
     }
     // @formatter:on

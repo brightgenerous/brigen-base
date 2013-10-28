@@ -1,9 +1,7 @@
 package com.brightgenerous.orm.mapper;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map.Entry;
 
 import com.brightgenerous.commons.EqualsUtils;
@@ -16,9 +14,11 @@ public class TableMapper implements Serializable {
 
     private static final long serialVersionUID = -8599881819890993547L;
 
-    private final Class<?> clazz;
+    public static enum Flag {
+        ALL, SELECT, INSERT, UPDATE
+    }
 
-    private final LinkedHashSet<Field> fields;
+    private final Class<?> clazz;
 
     private final boolean alias;
 
@@ -26,29 +26,27 @@ public class TableMapper implements Serializable {
 
     private final String property;
 
-    private final LinkedHashMap<String, String> fieldColumns;
+    private final LinkedHashMap<String, ColumnDefine> fieldColumns;
 
-    public TableMapper(Class<?> clazz, LinkedHashSet<Field> fields, boolean alias, String table) {
-        this(clazz, fields, alias, table, (String) null);
+    public TableMapper(Class<?> clazz, boolean alias, String table) {
+        this(clazz, alias, table, (String) null);
     }
 
-    protected TableMapper(Class<?> clazz, LinkedHashSet<Field> fields, boolean alias, String table,
-            String property) {
-        this(clazz, fields, alias, table, property, null);
+    protected TableMapper(Class<?> clazz, boolean alias, String table, String property) {
+        this(clazz, alias, table, property, null);
     }
 
-    public TableMapper(Class<?> clazz, LinkedHashSet<Field> fields, boolean alias, String table,
-            LinkedHashMap<String, String> fieldColumns) {
-        this(clazz, fields, alias, table, null, fieldColumns);
+    public TableMapper(Class<?> clazz, boolean alias, String table,
+            LinkedHashMap<String, ColumnDefine> fieldColumns) {
+        this(clazz, alias, table, null, fieldColumns);
     }
 
-    protected TableMapper(Class<?> clazz, LinkedHashSet<Field> fields, boolean alias, String table,
-            String property, LinkedHashMap<String, String> fieldColumns) {
+    protected TableMapper(Class<?> clazz, boolean alias, String table, String property,
+            LinkedHashMap<String, ColumnDefine> fieldColumns) {
         Args.notNull(clazz, "clazz");
         Args.notEmpty(table, "table");
 
         this.clazz = clazz;
-        this.fields = fields;
         this.alias = alias;
         this.table = table;
         this.property = property;
@@ -57,10 +55,6 @@ public class TableMapper implements Serializable {
 
     public Class<?> getBeanClass() {
         return clazz;
-    }
-
-    public LinkedHashSet<Field> getFields() {
-        return fields;
     }
 
     public boolean isAlias() {
@@ -75,7 +69,7 @@ public class TableMapper implements Serializable {
         return property;
     }
 
-    public LinkedHashMap<String, String> getFieldColumns() {
+    public LinkedHashMap<String, ColumnDefine> getFieldColumns() {
         return fieldColumns;
     }
 
@@ -88,18 +82,14 @@ public class TableMapper implements Serializable {
 
     private transient volatile LinkedHashMap<String, String> propertyFieldFullColumns;
 
-    public LinkedHashMap<String, String> getStripFieldFullColumns() {
+    public LinkedHashMap<String, String> getStripFieldFullColumns(Flag flag) {
         if (stripFieldFullColumns == null) {
             synchronized (this) {
                 if (stripFieldFullColumns == null) {
-                    LinkedHashMap<String, String> ffcs = getFieldFullColumns();
+                    LinkedHashMap<String, String> ffcs = getFieldFullColumns(flag);
                     LinkedHashMap<String, String> tmp = new LinkedHashMap<>();
                     for (Entry<String, String> e : ffcs.entrySet()) {
-                        String k = e.getKey();
-                        int index;
-                        if ((index = k.lastIndexOf(".")) != -1) {
-                            k = k.substring(index + 1);
-                        }
+                        String k = MapperUtils.spritField(e.getKey());
                         if (!tmp.containsKey(k)) {
                             tmp.put(k, e.getValue());
                         }
@@ -111,21 +101,24 @@ public class TableMapper implements Serializable {
         return stripFieldFullColumns;
     }
 
-    public LinkedHashMap<String, String> getFieldFullColumns() {
+    public LinkedHashMap<String, String> getFieldFullColumns(Flag flag) {
         if (fieldFullColumns == null) {
             synchronized (this) {
                 if (fieldFullColumns == null) {
                     LinkedHashMap<String, String> tmp = new LinkedHashMap<>();
                     if ((fieldColumns != null) && !fieldColumns.isEmpty()) {
-                        for (Entry<String, String> e : fieldColumns.entrySet()) {
-                            String f = e.getKey();
-                            String c = e.getValue();
-                            if (StringUtils.isEmpty(f) || StringUtils.isEmpty(c)) {
+                        for (Entry<String, ColumnDefine> e : fieldColumns.entrySet()) {
+                            ColumnDefine cd = e.getValue();
+                            if (!checkFlag(cd, flag)) {
                                 continue;
                             }
-                            if (StringUtils.isNotEmpty(table)) {
-                                c = table + "." + c;
+                            String f = e.getKey();
+                            String c = cd.getName();
+                            if (StringUtils.isEmpty(f) || StringUtils.isEmpty(c)) {
+                                throw new IllegalStateException(String.format(
+                                        "must not be null field(=%s) and column(%s)", f, c));
                             }
+                            c = MapperUtils.joinTableColumn(table, c);
                             if (!tmp.containsKey(f)) {
                                 tmp.put(f, c);
                             }
@@ -138,17 +131,17 @@ public class TableMapper implements Serializable {
         return fieldFullColumns;
     }
 
-    public LinkedHashMap<String, String> getPropertyFieldFullColumns() {
+    public LinkedHashMap<String, String> getPropertyFieldFullColumns(Flag flag) {
         if (propertyFieldFullColumns == null) {
             synchronized (this) {
                 if (propertyFieldFullColumns == null) {
-                    LinkedHashMap<String, String> ffcs = getFieldFullColumns();
+                    LinkedHashMap<String, String> ffcs = getFieldFullColumns(flag);
                     if (StringUtils.isEmpty(property)) {
                         propertyFieldFullColumns = ffcs;
                     } else {
                         LinkedHashMap<String, String> tmp = new LinkedHashMap<>();
                         for (Entry<String, String> e : ffcs.entrySet()) {
-                            String pf = property + "." + e.getKey();
+                            String pf = MapperUtils.joinPropertyField(property, e.getKey());
                             if (!tmp.containsKey(pf)) {
                                 tmp.put(pf, e.getValue());
                             }
@@ -161,16 +154,30 @@ public class TableMapper implements Serializable {
         return propertyFieldFullColumns;
     }
 
+    protected boolean checkFlag(ColumnDefine columnDefine, Flag flag) {
+        switch (flag) {
+            case ALL:
+                return true;
+            case SELECT:
+                return columnDefine.isEnableSelect();
+            case INSERT:
+                return columnDefine.isEnableInsert();
+            case UPDATE:
+                return columnDefine.isEnableUpdate();
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
     public static TableMapper createAlt(TableMapper tableMapper, String property) {
         Args.notNull(tableMapper, "tableMapper");
 
         TableMapper ret;
         if (tableMapper.fieldColumns == null) {
-            ret = new TableMapper(tableMapper.clazz, tableMapper.fields, tableMapper.alias,
-                    tableMapper.table, property);
+            ret = new TableMapper(tableMapper.clazz, tableMapper.alias, tableMapper.table, property);
         } else {
-            ret = new TableMapper(tableMapper.clazz, tableMapper.fields, tableMapper.alias,
-                    tableMapper.table, property, tableMapper.fieldColumns);
+            ret = new TableMapper(tableMapper.clazz, tableMapper.alias, tableMapper.table,
+                    property, tableMapper.fieldColumns);
         }
         return ret;
     }

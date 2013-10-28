@@ -30,6 +30,7 @@ import com.brightgenerous.orm.Fields;
 import com.brightgenerous.orm.IField;
 import com.brightgenerous.orm.Sort;
 import com.brightgenerous.orm.Sorts;
+import com.brightgenerous.orm.mapper.TableMapper.Flag;
 
 /*
  * Helper Class for MyBatis Mapper.xml script.
@@ -347,7 +348,7 @@ public abstract class MapperMethods implements Serializable {
                     if (tm == null) {
                         continue;
                     }
-                    Map<String, String> pffcs = tm.getPropertyFieldFullColumns();
+                    Map<String, String> pffcs = tm.getPropertyFieldFullColumns(Flag.SELECT);
                     if ((pffcs != null) && !pffcs.isEmpty()) {
                         for (Entry<String, String> e : pffcs.entrySet()) {
                             String k = e.getKey();
@@ -397,7 +398,7 @@ public abstract class MapperMethods implements Serializable {
             List<TableMapper> tms = getTableMappers(getTable(), removeAll(propertys, excludes));
             if ((tms != null) && !tms.isEmpty()) {
                 for (Entry<String, Field<Serializable>> entry : fields.entrySet()) {
-                    List<String> columns = getFullColumns(entry.getKey(), tms);
+                    List<String> columns = getFullColumns(entry.getKey(), tms, Flag.SELECT);
                     if ((columns == null) || columns.isEmpty()) {
                         continue;
                     }
@@ -452,7 +453,7 @@ public abstract class MapperMethods implements Serializable {
             List<TableMapper> tms = getTableMappers(getTable(), removeAll(propertys, excludes));
             if ((tms != null) && !tms.isEmpty()) {
                 for (Sort sort : sorts) {
-                    List<String> columns = getFullColumns(sort.getKey(), tms);
+                    List<String> columns = getFullColumns(sort.getKey(), tms, Flag.SELECT);
                     if ((columns == null) || columns.isEmpty()) {
                         continue;
                     }
@@ -498,7 +499,7 @@ public abstract class MapperMethods implements Serializable {
         return false;
     }
 
-    protected List<String> getFullColumns(String field, List<TableMapper> tableMappers) {
+    protected List<String> getFullColumns(String field, List<TableMapper> tableMappers, Flag flag) {
         List<String> ret = new ArrayList<>();
         if (StringUtils.isNotEmpty(field) && (tableMappers != null) && !tableMappers.isEmpty()) {
             if (field.indexOf(".") == -1) {
@@ -508,7 +509,7 @@ public abstract class MapperMethods implements Serializable {
                     }
                     String fc = null;
                     {
-                        Map<String, String> sffcs = tableMapper.getStripFieldFullColumns();
+                        Map<String, String> sffcs = tableMapper.getStripFieldFullColumns(flag);
                         if ((sffcs != null) && sffcs.containsKey(field)) {
                             fc = sffcs.get(field);
                         }
@@ -524,13 +525,13 @@ public abstract class MapperMethods implements Serializable {
                     }
                     String fc = null;
                     {
-                        Map<String, String> pffcs = tableMapper.getPropertyFieldFullColumns();
+                        Map<String, String> pffcs = tableMapper.getPropertyFieldFullColumns(flag);
                         if ((pffcs != null) && pffcs.containsKey(field)) {
                             fc = pffcs.get(field);
                         }
                     }
                     if (StringUtils.isEmpty(fc)) {
-                        Map<String, String> ffcs = tableMapper.getFieldFullColumns();
+                        Map<String, String> ffcs = tableMapper.getFieldFullColumns(flag);
                         if ((ffcs != null) && ffcs.containsKey(field)) {
                             fc = ffcs.get(field);
                         }
