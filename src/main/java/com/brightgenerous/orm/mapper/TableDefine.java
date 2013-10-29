@@ -1,6 +1,8 @@
 package com.brightgenerous.orm.mapper;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.brightgenerous.commons.EqualsUtils;
@@ -24,7 +26,8 @@ public class TableDefine implements Serializable {
         Args.notNull(tableMapper, "tableMapper");
 
         this.tableMapper = tableMapper;
-        this.propertyTableMappers = propertyTableMappers;
+        this.propertyTableMappers = new HashMap<>(
+                (propertyTableMappers == null) ? Collections.EMPTY_MAP : propertyTableMappers);
     }
 
     public TableMapper getTableMapper() {

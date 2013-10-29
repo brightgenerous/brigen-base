@@ -101,32 +101,57 @@
 		</where>
 	</sql>
 
-	<insert id="insert" parameterType="Header">
-		<selectKey keyProperty="headerNo" resultType="Long" order="AFTER">
+	<insert id="insert">
+		<bind name="methods" value="@com.brightgenerous.orm.mapper.MapperMethods@get('t_header')" />
+
+		<selectKey keyProperty="bean.headerNo" resultType="Long" order="AFTER">
 			select max(identity_val_local()) from t_header
 		</selectKey>
+
 		insert into
 			t_header (
-				header_value
+				<foreach index="key" item="value" separator=","
+						collection="methods.filterInserts(bean)">
+					${key}
+				</foreach>
 			) values (
-				#{headerValue, jdbcType=VARCHAR}
+				<foreach index="key" item="value" separator=","
+						collection="methods.filterInserts(bean)">
+					<choose><when test="value.value neq null">#{value.value}</when><otherwise>null</otherwise></choose>
+				</foreach>
 			)
 	</insert>
 
-	<update id="update" parameterType="Header">
+	<update id="update">
+		<bind name="methods" value="@com.brightgenerous.orm.mapper.MapperMethods@get('t_header')" />
+
 		update
 			t_header
+
 		set
-			header_value = #{headerValue, jdbcType=VARCHAR}
+			<foreach index="key" item="value" separator=","
+					collection="methods.filterUpdates(bean)">
+				${key} = <choose><when test="value.value neq null">#{value.value}</when><otherwise>null</otherwise></choose>
+			</foreach>
+
 		where
-			header_no = #{headerNo, jdbcType=BIGINT}
+			<foreach index="key" item="value" separator="and"
+					collection="methods.filterPrimarys(bean)">
+				${key} = <choose><when test="value.value neq null">#{value.value}</when><otherwise>null</otherwise></choose>
+			</foreach>
 	</update>
 
-	<delete id="delete" parameterType="Header">
+	<delete id="delete">
+		<bind name="methods" value="@com.brightgenerous.orm.mapper.MapperMethods@get('t_header')" />
+
 		delete from
 			t_header
+
 		where
-			header_no = #{headerNo, jdbcType=BIGINT}
+			<foreach index="key" item="value"
+					collection="methods.filterPrimarys(bean)">
+				${key} = <choose><when test="value.value neq null">#{value.value}</when><otherwise>null</otherwise></choose>
+			</foreach>
 	</delete>
 
 </mapper>

@@ -1,8 +1,11 @@
 package com.brightgenerous.orm.mapper;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.brightgenerous.commons.EqualsUtils;
 import com.brightgenerous.commons.HashCodeUtils;
@@ -26,22 +29,18 @@ public class TableMapper implements Serializable {
 
     private final String property;
 
+    private final LinkedHashMap<String, ColumnDefine> primarys;
+
     private final LinkedHashMap<String, ColumnDefine> fieldColumns;
 
-    public TableMapper(Class<?> clazz, boolean alias, String table) {
-        this(clazz, alias, table, (String) null);
-    }
-
-    protected TableMapper(Class<?> clazz, boolean alias, String table, String property) {
-        this(clazz, alias, table, property, null);
-    }
-
     public TableMapper(Class<?> clazz, boolean alias, String table,
+            LinkedHashMap<String, ColumnDefine> primarys,
             LinkedHashMap<String, ColumnDefine> fieldColumns) {
-        this(clazz, alias, table, null, fieldColumns);
+        this(clazz, alias, table, null, primarys, fieldColumns);
     }
 
     protected TableMapper(Class<?> clazz, boolean alias, String table, String property,
+            LinkedHashMap<String, ColumnDefine> primarys,
             LinkedHashMap<String, ColumnDefine> fieldColumns) {
         Args.notNull(clazz, "clazz");
         Args.notEmpty(table, "table");
@@ -50,7 +49,9 @@ public class TableMapper implements Serializable {
         this.alias = alias;
         this.table = table;
         this.property = property;
-        this.fieldColumns = fieldColumns;
+        this.primarys = new LinkedHashMap<>((primarys == null) ? Collections.EMPTY_MAP : primarys);
+        this.fieldColumns = new LinkedHashMap<>((fieldColumns == null) ? Collections.EMPTY_MAP
+                : fieldColumns);
     }
 
     public Class<?> getBeanClass() {
@@ -69,89 +70,151 @@ public class TableMapper implements Serializable {
         return property;
     }
 
+    public LinkedHashMap<String, ColumnDefine> getPrimarys() {
+        return primarys;
+    }
+
     public LinkedHashMap<String, ColumnDefine> getFieldColumns() {
         return fieldColumns;
     }
 
-    private static final String[] excludeFields = new String[] { "stripFieldFullColumns",
-            "fieldFullColumns", "propertyFieldFullColumns" };
+    private static final String[] excludeFields = new String[] { "flagFieldColumns",
+            "flagStripFieldFullColumns", "flagFieldFullColumns", "flagPropertyFieldFullColumns" };
 
-    private transient volatile LinkedHashMap<String, String> stripFieldFullColumns;
+    private transient volatile Map<Flag, LinkedHashMap<String, ColumnDefine>> flagFieldColumns;
 
-    private transient volatile LinkedHashMap<String, String> fieldFullColumns;
+    private transient volatile Map<Flag, LinkedHashMap<String, String>> flagStripFieldFullColumns;
 
-    private transient volatile LinkedHashMap<String, String> propertyFieldFullColumns;
+    private transient volatile Map<Flag, LinkedHashMap<String, String>> flagFieldFullColumns;
 
-    public LinkedHashMap<String, String> getStripFieldFullColumns(Flag flag) {
-        if (stripFieldFullColumns == null) {
+    private transient volatile Map<Flag, LinkedHashMap<String, String>> flagPropertyFieldFullColumns;
+
+    public LinkedHashMap<String, ColumnDefine> getFieldColumns(Flag flag) {
+        Args.notNull(flag, "flag");
+
+        if (flagFieldColumns == null) {
             synchronized (this) {
-                if (stripFieldFullColumns == null) {
-                    LinkedHashMap<String, String> ffcs = getFieldFullColumns(flag);
-                    LinkedHashMap<String, String> tmp = new LinkedHashMap<>();
-                    for (Entry<String, String> e : ffcs.entrySet()) {
-                        String k = MapperUtils.spritField(e.getKey());
-                        if (!tmp.containsKey(k)) {
-                            tmp.put(k, e.getValue());
-                        }
-                    }
-                    stripFieldFullColumns = tmp;
+                if (flagFieldColumns == null) {
+                    flagFieldColumns = new ConcurrentHashMap<>();
                 }
             }
         }
-        return stripFieldFullColumns;
+        LinkedHashMap<String, ColumnDefine> ret = flagFieldColumns.get(flag);
+        if (ret == null) {
+            synchronized (flagFieldColumns) {
+                ret = flagFieldColumns.get(flag);
+                if (ret == null) {
+                    ret = new LinkedHashMap<>();
+                    for (Entry<String, ColumnDefine> e : fieldColumns.entrySet()) {
+                        ColumnDefine cd = e.getValue();
+                        if (!checkFlag(cd, flag)) {
+                            continue;
+                        }
+                        ret.put(e.getKey(), cd);
+                    }
+                    flagFieldColumns.put(flag, ret);
+                }
+            }
+        }
+        return ret;
+    }
+
+    public LinkedHashMap<String, String> getStripFieldFullColumns(Flag flag) {
+        Args.notNull(flag, "flag");
+
+        if (flagStripFieldFullColumns == null) {
+            synchronized (this) {
+                if (flagStripFieldFullColumns == null) {
+                    flagStripFieldFullColumns = new ConcurrentHashMap<>();
+                }
+            }
+        }
+        LinkedHashMap<String, String> ret = flagStripFieldFullColumns.get(flag);
+        if (ret == null) {
+            synchronized (flagStripFieldFullColumns) {
+                ret = flagStripFieldFullColumns.get(flag);
+                if (ret == null) {
+                    ret = new LinkedHashMap<>();
+                    LinkedHashMap<String, String> ffcs = getFieldFullColumns(flag);
+                    for (Entry<String, String> e : ffcs.entrySet()) {
+                        String k = MapperUtils.spritField(e.getKey());
+                        if (!ret.containsKey(k)) {
+                            ret.put(k, e.getValue());
+                        }
+                    }
+                    flagStripFieldFullColumns.put(flag, ret);
+                }
+            }
+        }
+        return ret;
     }
 
     public LinkedHashMap<String, String> getFieldFullColumns(Flag flag) {
-        if (fieldFullColumns == null) {
+        Args.notNull(flag, "flag");
+
+        if (flagFieldFullColumns == null) {
             synchronized (this) {
-                if (fieldFullColumns == null) {
-                    LinkedHashMap<String, String> tmp = new LinkedHashMap<>();
-                    if ((fieldColumns != null) && !fieldColumns.isEmpty()) {
-                        for (Entry<String, ColumnDefine> e : fieldColumns.entrySet()) {
-                            ColumnDefine cd = e.getValue();
-                            if (!checkFlag(cd, flag)) {
-                                continue;
-                            }
-                            String f = e.getKey();
-                            String c = cd.getName();
-                            if (StringUtils.isEmpty(f) || StringUtils.isEmpty(c)) {
-                                throw new IllegalStateException(String.format(
-                                        "must not be null field(=%s) and column(%s)", f, c));
-                            }
-                            c = MapperUtils.joinTableColumn(table, c);
-                            if (!tmp.containsKey(f)) {
-                                tmp.put(f, c);
-                            }
-                        }
-                    }
-                    fieldFullColumns = tmp;
+                if (flagFieldFullColumns == null) {
+                    flagFieldFullColumns = new ConcurrentHashMap<>();
                 }
             }
         }
-        return fieldFullColumns;
+        LinkedHashMap<String, String> ret = flagFieldFullColumns.get(flag);
+        if (ret == null) {
+            synchronized (flagFieldFullColumns) {
+                ret = flagFieldFullColumns.get(flag);
+                if (ret == null) {
+                    ret = new LinkedHashMap<>();
+                    for (Entry<String, ColumnDefine> e : fieldColumns.entrySet()) {
+                        ColumnDefine cd = e.getValue();
+                        if (!checkFlag(cd, flag)) {
+                            continue;
+                        }
+                        String f = e.getKey();
+                        String c = MapperUtils.joinTableColumn(table, cd.getName());
+                        if (!ret.containsKey(f)) {
+                            ret.put(f, c);
+                        }
+                    }
+                    flagFieldFullColumns.put(flag, ret);
+                }
+            }
+        }
+        return ret;
     }
 
     public LinkedHashMap<String, String> getPropertyFieldFullColumns(Flag flag) {
-        if (propertyFieldFullColumns == null) {
+        Args.notNull(flag, "flag");
+
+        if (flagPropertyFieldFullColumns == null) {
             synchronized (this) {
-                if (propertyFieldFullColumns == null) {
+                if (flagPropertyFieldFullColumns == null) {
+                    flagPropertyFieldFullColumns = new ConcurrentHashMap<>();
+                }
+            }
+        }
+        LinkedHashMap<String, String> ret = flagPropertyFieldFullColumns.get(flag);
+        if (ret == null) {
+            synchronized (flagPropertyFieldFullColumns) {
+                ret = flagPropertyFieldFullColumns.get(flag);
+                if (ret == null) {
                     LinkedHashMap<String, String> ffcs = getFieldFullColumns(flag);
                     if (StringUtils.isEmpty(property)) {
-                        propertyFieldFullColumns = ffcs;
+                        ret = ffcs;
                     } else {
-                        LinkedHashMap<String, String> tmp = new LinkedHashMap<>();
+                        ret = new LinkedHashMap<>();
                         for (Entry<String, String> e : ffcs.entrySet()) {
                             String pf = MapperUtils.joinPropertyField(property, e.getKey());
-                            if (!tmp.containsKey(pf)) {
-                                tmp.put(pf, e.getValue());
+                            if (!ret.containsKey(pf)) {
+                                ret.put(pf, e.getValue());
                             }
                         }
-                        propertyFieldFullColumns = tmp;
+                        flagPropertyFieldFullColumns.put(flag, ret);
                     }
                 }
             }
         }
-        return propertyFieldFullColumns;
+        return ret;
     }
 
     protected boolean checkFlag(ColumnDefine columnDefine, Flag flag) {
@@ -172,14 +235,8 @@ public class TableMapper implements Serializable {
     public static TableMapper createAlt(TableMapper tableMapper, String property) {
         Args.notNull(tableMapper, "tableMapper");
 
-        TableMapper ret;
-        if (tableMapper.fieldColumns == null) {
-            ret = new TableMapper(tableMapper.clazz, tableMapper.alias, tableMapper.table, property);
-        } else {
-            ret = new TableMapper(tableMapper.clazz, tableMapper.alias, tableMapper.table,
-                    property, tableMapper.fieldColumns);
-        }
-        return ret;
+        return new TableMapper(tableMapper.clazz, tableMapper.alias, tableMapper.table, property,
+                tableMapper.primarys, tableMapper.fieldColumns);
     }
 
     @Override

@@ -13,9 +13,9 @@ public interface HeaderMapper {
 
     List<Header> selectAll(@Param("condition") Condition condition);
 
-    int insert(Header bean);
+    int insert(@Param("bean") Header bean);
 
-    int update(Header bean);
+    int update(@Param("bean") Header bean);
 
-    int delete(Header bean);
+    int delete(@Param("bean") Header bean);
 }

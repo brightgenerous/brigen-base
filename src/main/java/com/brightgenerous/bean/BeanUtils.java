@@ -315,23 +315,110 @@ public class BeanUtils {
         return ret;
     }
 
-    public static Set<Entry<String, Object>> getPrimarySets(AbstractBean bean) {
-        return getPrimarySets(bean, true);
+    public static LinkedHashMap<String, Class<?>> getPrimaryClassMapShallow(Class<?> clazz) {
+        Set<Entry<String[], Class<?>>> set = getPrimaryClassMap(clazz, false);
+        if (set == null) {
+            return null;
+        }
+        LinkedHashMap<String, Class<?>> ret = new LinkedHashMap<>();
+        for (Entry<String[], Class<?>> e : set) {
+            String[] key = e.getKey();
+            if (key.length != 1) {
+                throw new IllegalStateException();
+            }
+            ret.put(key[0], e.getValue());
+        }
+        return ret;
     }
 
-    public static Set<Entry<String, Object>> getPrimarySets(AbstractBean bean, boolean deep) {
+    public static LinkedHashSet<Entry<String[], Class<?>>> getPrimaryClassMap(Class<?> clazz) {
+        return getPrimaryClassMap(clazz, true);
+    }
+
+    public static LinkedHashSet<Entry<String[], Class<?>>> getPrimaryClassMap(Class<?> clazz,
+            boolean deep) {
+        if (clazz == null) {
+            return null;
+        }
+        LinkedHashSet<Field> fields = getPrimaryFields(clazz);
+        if (fields.isEmpty()) {
+            return new LinkedHashSet<>();
+        }
+        LinkedHashSet<Entry<String[], Class<?>>> ret = new LinkedHashSet<>();
+        try {
+            for (Field field : fields) {
+                Class<?> c = field.getType();
+                if (deep && AbstractBean.class.isAssignableFrom(c)) {
+                    Set<Entry<String[], Class<?>>> set = getPrimaryClassMap(c, deep);
+                    for (Entry<String[], Class<?>> e : set) {
+                        String[] k = e.getKey();
+                        Class<?> v = e.getValue();
+                        String[] ks = new String[k.length + 1];
+                        ks[0] = field.getName();
+                        for (int i = 0; i < k.length; i++) {
+                            ks[i + 1] = k[i];
+                        }
+                        ret.add(new SimpleImmutableEntry<String[], Class<?>>(ks, v));
+                    }
+                } else {
+                    String[] ks = new String[] { field.getName() };
+                    ret.add(new SimpleImmutableEntry<String[], Class<?>>(ks, c));
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        }
+        return ret;
+    }
+
+    public static LinkedHashMap<String, Object> getPrimaryValueMapShallow(AbstractBean bean) {
+        Set<Entry<String[], Object>> set = getPrimaryValueMap(bean, false);
+        if (set == null) {
+            return null;
+        }
+        LinkedHashMap<String, Object> ret = new LinkedHashMap<>();
+        for (Entry<String[], Object> e : set) {
+            String[] key = e.getKey();
+            if (key.length != 1) {
+                throw new IllegalStateException();
+            }
+            ret.put(key[0], e.getValue());
+        }
+        return ret;
+    }
+
+    public static Set<Entry<String[], Object>> getPrimaryValueMap(AbstractBean bean) {
+        return getPrimaryValueMap(bean, true);
+    }
+
+    public static Set<Entry<String[], Object>> getPrimaryValueMap(AbstractBean bean, boolean deep) {
+        if (bean == null) {
+            return null;
+        }
         LinkedHashSet<Field> fields = getPrimaryFields(bean);
         if (fields.isEmpty()) {
             return Collections.EMPTY_SET;
         }
-        Set<Entry<String, Object>> ret = new HashSet<>();
+        Set<Entry<String[], Object>> ret = new HashSet<>();
         try {
             for (Field field : fields) {
                 Object val = field.get(bean);
                 if (deep && (val instanceof AbstractBean)) {
-                    val = getPrimarySets((AbstractBean) val, deep);
+                    Set<Entry<String[], Object>> set = getPrimaryValueMap((AbstractBean) val, deep);
+                    for (Entry<String[], Object> e : set) {
+                        String[] k = e.getKey();
+                        Object v = e.getValue();
+                        String[] ks = new String[k.length + 1];
+                        ks[0] = field.getName();
+                        for (int i = 0; i < k.length; i++) {
+                            ks[i + 1] = k[i];
+                        }
+                        ret.add(new SimpleImmutableEntry<>(ks, v));
+                    }
+                } else {
+                    String[] ks = new String[] { field.getName() };
+                    ret.add(new SimpleImmutableEntry<>(ks, val));
                 }
-                ret.add(new SimpleImmutableEntry<>(field.getName(), val));
             }
         } catch (IllegalArgumentException | IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -340,17 +427,17 @@ public class BeanUtils {
     }
 
     private static LinkedHashSet<Field> getPrimaryFields(AbstractBean bean) {
-        LinkedHashSet<Field> ret;
-        {
-            Class<?> clazz = bean.getClass();
-            ret = classPirmarys.get(clazz);
-            if (ret == null) {
-                synchronized (clazz) {
-                    ret = classPirmarys.get(clazz);
-                    if (ret == null) {
-                        ret = loadPrimarys(clazz);
-                        classPirmarys.put(clazz, ret);
-                    }
+        return getPrimaryFields(bean.getClass());
+    }
+
+    private static LinkedHashSet<Field> getPrimaryFields(Class<?> clazz) {
+        LinkedHashSet<Field> ret = classPirmarys.get(clazz);
+        if (ret == null) {
+            synchronized (clazz) {
+                ret = classPirmarys.get(clazz);
+                if (ret == null) {
+                    ret = loadPrimarys(clazz);
+                    classPirmarys.put(clazz, ret);
                 }
             }
         }

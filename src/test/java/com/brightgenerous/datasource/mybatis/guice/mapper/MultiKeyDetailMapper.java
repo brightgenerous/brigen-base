@@ -14,11 +14,11 @@ public interface MultiKeyDetailMapper {
 
     List<MultiKeyDetail> selectAll(@Param("condition") Condition condition);
 
-    int insert(MultiKeyDetail bean);
+    int insert(@Param("bean") MultiKeyDetail bean);
 
-    int update(MultiKeyDetail bean);
+    int update(@Param("bean") MultiKeyDetail bean);
 
-    int delete(MultiKeyDetail bean);
+    int delete(@Param("bean") MultiKeyDetail bean);
 
     int deleteByHeader(Header header);
 }

@@ -14,11 +14,11 @@ public interface SimpleKeyDetailMapper {
 
     List<SimpleKeyDetail> selectAll(@Param("condition") Condition condition);
 
-    int insert(SimpleKeyDetail bean);
+    int insert(@Param("bean") SimpleKeyDetail bean);
 
-    int update(SimpleKeyDetail bean);
+    int update(@Param("bean") SimpleKeyDetail bean);
 
-    int delete(SimpleKeyDetail bean);
+    int delete(@Param("bean") SimpleKeyDetail bean);
 
     int deleteByHeader(Header header);
 }

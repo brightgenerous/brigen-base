@@ -155,9 +155,11 @@ public class DataSourceTest {
             header.setHeaderNo(Long.valueOf(3));
             Header stored = bgt.getHeaderDetails(header);
 
+            assertNotEquals("hoge", stored.getHeaderValue());
             assertEquals(MULTI_DETAILS, stored.getMultiKeyDetails().size());
             assertEquals(SIMPLE_DETAILS, stored.getSimpleKeyDetails().size());
 
+            stored.setHeaderValue("hoge");
             stored.getMultiKeyDetails().remove(0);
             stored.getSimpleKeyDetails().remove(0);
             stored.getSimpleKeyDetails().remove(0);
@@ -166,6 +168,7 @@ public class DataSourceTest {
 
             stored = bgt.getHeaderDetails(header);
 
+            assertEquals("hoge", stored.getHeaderValue());
             assertEquals(MULTI_DETAILS - 1, stored.getMultiKeyDetails().size());
             assertEquals(SIMPLE_DETAILS - 2, stored.getSimpleKeyDetails().size());
         }

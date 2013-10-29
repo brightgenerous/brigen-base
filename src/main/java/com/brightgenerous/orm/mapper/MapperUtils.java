@@ -11,16 +11,20 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import com.brightgenerous.commons.EqualsUtils;
 import com.brightgenerous.commons.HashCodeUtils;
+import com.brightgenerous.commons.ObjectUtils;
 import com.brightgenerous.commons.StringUtils;
 import com.brightgenerous.commons.ToStringUtils;
 import com.brightgenerous.lang.Args;
+import com.brightgenerous.orm.DefaultIfNull;
 import com.brightgenerous.orm.Ignore;
+import com.brightgenerous.orm.mapper.TableMapper.Flag;
 
 public class MapperUtils {
 
@@ -83,20 +87,40 @@ public class MapperUtils {
     }
 
     public static void load(Register register, Class<?> clazz, String table) {
-        load(register, clazz, table, (String[]) null);
+        load(register, clazz, table, (FieldColumn[]) null);
+    }
+
+    public static void load(Register register, Class<?> clazz, String table,
+            LinkedHashSet<Entry<String[], Class<?>>> primarys) {
+        load(register, clazz, table, (FieldColumn[]) null, primarys);
+    }
+
+    public static void load(Register register, Class<?> clazz, String table,
+            FieldColumn[] fieldColumns) {
+        load(register, clazz, table, fieldColumns, null);
+    }
+
+    public static void load(Register register, Class<?> clazz, String table,
+            FieldColumn[] fieldColumns, LinkedHashSet<Entry<String[], Class<?>>> primarys) {
+        load(register, clazz, table, null, fieldColumns, primarys);
     }
 
     public static void load(Register register, Class<?> clazz, String table, String[] aliases) {
         load(register, clazz, table, aliases, (FieldColumn[]) null);
     }
 
-    public static void load(Register register, Class<?> clazz, String table,
-            FieldColumn... fieldColumns) {
-        load(register, clazz, table, null, fieldColumns);
+    public static void load(Register register, Class<?> clazz, String table, String[] aliases,
+            LinkedHashSet<Entry<String[], Class<?>>> primarys) {
+        load(register, clazz, table, aliases, null, primarys);
     }
 
     public static void load(Register register, Class<?> clazz, String table, String[] aliases,
-            FieldColumn... fieldColumns) {
+            FieldColumn[] fieldColumns) {
+        load(register, clazz, table, aliases, fieldColumns, null);
+    }
+
+    public static void load(Register register, Class<?> clazz, String table, String[] aliases,
+            FieldColumn[] fieldColumns, LinkedHashSet<Entry<String[], Class<?>>> primarys) {
         Args.notNull(register, "register");
         Args.notNull(clazz, "clazz");
         Args.notNull(table, "table");
@@ -116,7 +140,7 @@ public class MapperUtils {
                         checkColumnName(c);
                     }
                     fcs.put(f, new ColumnDefine(c, field.getType(), f, enableSelect(field),
-                            enableInsert(field), enableUpdate(field)));
+                            enableInsert(field), enableUpdate(field), defaultIfNull(field)));
                 }
             }
             for (Field field : clazz.getFields()) {
@@ -132,7 +156,7 @@ public class MapperUtils {
                         checkColumnName(c);
                     }
                     fcs.put(f, new ColumnDefine(c, field.getType(), f, enableSelect(field),
-                            enableInsert(field), enableUpdate(field)));
+                            enableInsert(field), enableUpdate(field), defaultIfNull(field)));
                 }
             }
             if ((fieldColumns != null) && (0 < fieldColumns.length)) {
@@ -149,7 +173,7 @@ public class MapperUtils {
                         throw new IllegalStateException(String.format(
                                 "duplicate field %s with column %s.", f, c));
                     }
-                    String[] propertys = f.split("\\."); // argument is regex. @see String#split(String)
+                    String[] propertys = f.split("\\."); // argument is "regex". @see String#split(String)
                     Class<?> type = checkPropertysField(clazz, propertys, register.getTypes());
                     if (register.checkStrict()) {
                         checkFieldName(f);
@@ -157,36 +181,63 @@ public class MapperUtils {
                     }
                     Ignore.Type it = fc.ignore();
                     fcs.put(f, new ColumnDefine(c, type, propertys, enableSelect(it),
-                            enableInsert(it), enableUpdate(it)));
+                            enableInsert(it), enableUpdate(it), fc.defaultIfNull()));
                 }
             }
         }
 
-        putTableMapper(register, clazz, table, false, fcs);
+        LinkedHashMap<String, ColumnDefine> ps = new LinkedHashMap<>();
+        if ((primarys != null) && !primarys.isEmpty()) {
+            for (Entry<String[], Class<?>> e : primarys) {
+                String[] k = e.getKey();
+                if (ObjectUtils.isNoSize(k)) {
+                    throw new IllegalStateException("The primarys has empty propertys.");
+                }
+                Class<?> v = e.getValue();
+                if (v == null) {
+                    throw new IllegalStateException("The primarys has null Class.");
+                }
+                inner: {
+                    for (Entry<String, ColumnDefine> fc : fcs.entrySet()) {
+                        ColumnDefine cd = fc.getValue();
+                        if (Arrays.equals(k, cd.getPropertys())) {
+                            Class<?> t = cd.getType();
+                            if (!t.isAssignableFrom(v) && !v.isAssignableFrom(t)) {
+                                throw new IllegalStateException();
+                            }
+                            ps.put(fc.getKey(), cd);
+                            break inner;
+                        }
+                    }
+                    throw new IllegalStateException();
+                }
+            }
+        }
+
+        putTableMapper(register, clazz, table, false, ps, fcs);
         if ((aliases != null) && (0 < aliases.length)) {
             for (String alias : aliases) {
-                putTableMapper(register, clazz, alias, true, fcs);
+                if (StringUtils.isEmpty(alias)) {
+                    throw new IllegalStateException("The aliases has empty alias value.");
+                }
+                putTableMapper(register, clazz, alias, true, ps, fcs);
             }
         }
     }
 
     private static void putTableMapper(Register register, Class<?> clazz, String table,
-            boolean alias, LinkedHashMap<String, ColumnDefine> fcs) {
-        if (StringUtils.isEmpty(table)) {
-            throw new IllegalStateException("The tables has empty table value.");
-        }
+            boolean alias, LinkedHashMap<String, ColumnDefine> primarys,
+            LinkedHashMap<String, ColumnDefine> fcs) {
         if (register.checkStrict()) {
             checkTableName(table);
         }
         if (register.getTableMapper(table) != null) {
             throw new IllegalStateException(String.format("already registed for %s", table));
         }
-        register.putTableMapper(table, new TableMapper(clazz, alias, table, fcs));
+        register.putTableMapper(table, new TableMapper(clazz, alias, table, primarys, fcs));
     }
 
     private static void checkProperty(String property) {
-        Args.notEmpty(property, "property");
-
         if (!property.matches("^[A-Za-z_]+[0-9A-Za-z_.]*$")) {
             throw new IllegalStateException(String.format("The property illegal string %s",
                     property));
@@ -195,9 +246,6 @@ public class MapperUtils {
 
     private static Class<?> checkPropertysField(Class<?> clazz, String[] propertys,
             Set<Class<?>> types) {
-        Args.notNull(clazz, "clazz");
-        Args.notEmpty(propertys, "propertys");
-
         Class<?> clz = clazz;
         for (String property : propertys) {
             Field fld;
@@ -218,24 +266,18 @@ public class MapperUtils {
     }
 
     private static void checkFieldName(String field) {
-        Args.notEmpty(field, "field");
-
         if (!field.matches("^[A-Za-z_]+[0-9A-Za-z_.]*$")) {
             throw new IllegalStateException(String.format("The field illegal string %s", field));
         }
     }
 
     private static void checkTableName(String table) {
-        Args.notEmpty(table, "table");
-
         if (!table.matches("^[A-Za-z_]+[0-9A-Za-z_]*$")) {
             throw new IllegalStateException(String.format("The table illegal string %s", table));
         }
     }
 
     private static void checkColumnName(String column) {
-        Args.notEmpty(column, "column");
-
         if (!column.matches("^[A-Za-z_]+[0-9A-Za-z_]*$")) {
             throw new IllegalStateException(String.format("The column illegal string %s", column));
         }
@@ -334,36 +376,14 @@ public class MapperUtils {
         return false;
     }
 
-    public static boolean verify(TableMapper tableMapper, Map<String, String> columnTypes,
-            TypeComparator typeComparator) {
-        if (tableMapper.isAlias()) {
-            throw new IllegalStateException("TableMapper must not be Alias.");
-        }
-        for (Entry<String, ColumnDefine> e : tableMapper.getFieldColumns().entrySet()) {
-            ColumnDefine cd = e.getValue();
-            Class<?> fieldType = cd.getType();
-            String columnName = cd.getName();
-            if (columnName == null) {
-                throw new IllegalStateException(String.format(
-                        "not found column for field name %s in class %s.", e.getKey(),
-                        fieldType.getName()));
-            }
-            String columnType = columnTypes.get(columnName);
-            if (columnType == null) {
-                throw new IllegalStateException(String.format(
-                        "not found column type for column name %s, field name %s in class %s.",
-                        columnName, e.getKey(), fieldType.getName()));
-            }
-            if ((typeComparator != null) && !typeComparator.compare(fieldType, columnType)) {
-                throw new IllegalStateException(String.format(
-                        "illegal column type %s for column name %s, field name %s in class %s.",
-                        columnType, columnName, e.getKey(), fieldType.getName()));
-            }
-        }
-        return true;
+    private static boolean defaultIfNull(Field field) {
+        return field.getAnnotation(DefaultIfNull.class) != null;
     }
 
     private static String toSnake(String field, FieldToColumnCase ftc) {
+        if (ftc == null) {
+            return field;
+        }
         String ret;
         switch (ftc) {
             case NONE:
@@ -380,6 +400,13 @@ public class MapperUtils {
                         ftc));
         }
         return ret;
+    }
+
+    public static boolean isNestedField(String field) {
+        if (field == null) {
+            return false;
+        }
+        return (field.indexOf(".") != -1);
     }
 
     public static String spritField(String field) {
@@ -407,6 +434,66 @@ public class MapperUtils {
         return property + "." + field;
     }
 
+    public static Object getPropertysValue(Object object, ColumnDefine columnDefine) {
+        if ((object == null) || (columnDefine == null)) {
+            return null;
+        }
+        Object obj = object;
+        try {
+            for (String property : columnDefine.getPropertys()) {
+                Class<?> clazz = obj.getClass();
+                Field field = clazz.getDeclaredField(property);
+                if (field == null) {
+                    field = clazz.getField(property);
+                }
+                if (!Modifier.isPublic(field.getModifiers()) && !field.isAccessible()) {
+                    field.setAccessible(true);
+                }
+                Object o = field.get(obj);
+                if (o == null) {
+                    return null;
+                }
+                obj = o;
+            }
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException
+                | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return obj;
+    }
+
+    public static boolean verify(TableMapper tableMapper, Map<String, String> columnTypes,
+            TypeComparator typeComparator) {
+        Args.notNull(tableMapper, "tableMapper");
+        Args.notEmpty(columnTypes, "columnTypes");
+
+        if (tableMapper.isAlias()) {
+            throw new IllegalStateException("TableMapper must not be Alias.");
+        }
+        for (Entry<String, ColumnDefine> e : tableMapper.getFieldColumns(Flag.ALL).entrySet()) {
+            ColumnDefine cd = e.getValue();
+            Class<?> fieldType = cd.getType();
+            String columnName = cd.getName();
+            if (columnName == null) {
+                throw new IllegalStateException(String.format(
+                        "not found column for field name %s in class %s.", e.getKey(),
+                        fieldType.getName()));
+            }
+            String columnType = columnTypes.get(columnName);
+            if (columnType == null) {
+                throw new IllegalStateException(String.format(
+                        "not found column type for column name %s, field name %s in class %s.",
+                        columnName, e.getKey(), fieldType.getName()));
+            }
+            if ((typeComparator != null) && !typeComparator.compare(fieldType, columnType)) {
+                throw new IllegalStateException(String.format(
+                        "illegal column type %s for column name %s, field name %s in class %s.",
+                        columnType, columnName, e.getKey(), fieldType.getName()));
+            }
+        }
+        return true;
+    }
+
     public static class FieldColumn implements Serializable {
 
         private static final long serialVersionUID = 6744735469951734482L;
@@ -421,8 +508,10 @@ public class MapperUtils {
 
         private Ignore.Type ignore;
 
+        private boolean defaultIfNull;
+
         protected FieldColumn(String field, String column, boolean primary, boolean override,
-                Ignore.Type ignore) {
+                Ignore.Type ignore, boolean defaultIfNull) {
             Args.notEmpty(field, "field");
 
             this.field = field;
@@ -430,6 +519,7 @@ public class MapperUtils {
             this.primary = primary;
             this.override = override;
             this.ignore = ignore;
+            this.defaultIfNull = defaultIfNull;
         }
 
         public static FieldColumn create(String field) {
@@ -451,7 +541,12 @@ public class MapperUtils {
 
         public static FieldColumn create(String field, String column, boolean primary,
                 boolean override, Ignore.Type ignore) {
-            return new FieldColumn(field, column, primary, override, ignore);
+            return create(field, column, primary, override, ignore, false);
+        }
+
+        public static FieldColumn create(String field, String column, boolean primary,
+                boolean override, Ignore.Type ignore, boolean defaultIfNull) {
+            return new FieldColumn(field, column, primary, override, ignore, defaultIfNull);
         }
 
         public String field() {
@@ -494,6 +589,19 @@ public class MapperUtils {
 
         public FieldColumn ignore(Ignore.Type ignore) {
             this.ignore = ignore;
+            return this;
+        }
+
+        public boolean defaultIfNull() {
+            return defaultIfNull;
+        }
+
+        public FieldColumn defaultIfNullTrue() {
+            return defaultIfNull(true);
+        }
+
+        public FieldColumn defaultIfNull(boolean defaultIfNull) {
+            this.defaultIfNull = defaultIfNull;
             return this;
         }
 

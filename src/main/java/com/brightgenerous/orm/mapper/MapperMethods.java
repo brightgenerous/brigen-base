@@ -28,6 +28,7 @@ import com.brightgenerous.lang.Args;
 import com.brightgenerous.orm.Field;
 import com.brightgenerous.orm.Fields;
 import com.brightgenerous.orm.IField;
+import com.brightgenerous.orm.IValue;
 import com.brightgenerous.orm.Sort;
 import com.brightgenerous.orm.Sorts;
 import com.brightgenerous.orm.mapper.TableMapper.Flag;
@@ -471,6 +472,91 @@ public abstract class MapperMethods implements Serializable {
         return ret;
     }
 
+    private static final JdbcTypeConverter converter = new JdbcTypeConverter();
+
+    public LinkedHashMap<String, IValue<Object>> filterInserts(Object object) {
+        Args.notNull(object, "object");
+
+        TableMapper tm = getTableMapper(getTable());
+        if (!tm.getBeanClass().isAssignableFrom(object.getClass())) {
+            throw new IllegalStateException(String.format("The Argument %s is not instanceof %s",
+                    object.getClass().getName(), tm.getBeanClass().getName()));
+        }
+        LinkedHashMap<String, IValue<Object>> ret = new LinkedHashMap<>();
+        Map<String, ColumnDefine> fcs = tm.getFieldColumns(Flag.INSERT);
+        for (Entry<String, ColumnDefine> e : fcs.entrySet()) {
+            ColumnDefine cd = e.getValue();
+            Object value = MapperUtils.getPropertysValue(object, cd);
+            if ((value == null) && cd.isDefaultIfNull()) {
+                continue;
+            }
+            String jdbcType = converter.convert(cd.getType());
+            ret.put(cd.getName(), new ValueImpl<>(value, jdbcType));
+        }
+        return ret;
+    }
+
+    public LinkedHashMap<String, IValue<Object>> filterUpdates(Object object) {
+        return filterUpdates(object, false);
+    }
+
+    public LinkedHashMap<String, IValue<Object>> filterUpdatesAll(Object object) {
+        return filterUpdates(object, true);
+    }
+
+    private LinkedHashMap<String, IValue<Object>> filterUpdates(Object object, boolean all) {
+        Args.notNull(object, "object");
+
+        TableMapper tm = getTableMapper(getTable());
+        if (!tm.getBeanClass().isAssignableFrom(object.getClass())) {
+            throw new IllegalStateException(String.format("The Argument %s is not instanceof %s",
+                    object.getClass().getName(), tm.getBeanClass().getName()));
+        }
+        LinkedHashMap<String, IValue<Object>> ret = new LinkedHashMap<>();
+        Set<String> primarys = null;
+        if (!all) {
+            primarys = new HashSet<>();
+            for (Entry<String, ColumnDefine> e : tm.getPrimarys().entrySet()) {
+                ColumnDefine cd = e.getValue();
+                primarys.add(cd.getName());
+            }
+        }
+        Map<String, ColumnDefine> fcs = tm.getFieldColumns(Flag.UPDATE);
+        for (Entry<String, ColumnDefine> e : fcs.entrySet()) {
+            ColumnDefine cd = e.getValue();
+            String name = cd.getName();
+            if ((primarys != null) && primarys.contains(name)) {
+                continue;
+            }
+            Object value = MapperUtils.getPropertysValue(object, cd);
+            if ((value == null) && cd.isDefaultIfNull()) {
+                continue;
+            }
+            String jdbcType = converter.convert(cd.getType());
+            ret.put(name, new ValueImpl<>(value, jdbcType));
+        }
+        return ret;
+    }
+
+    public LinkedHashMap<String, IValue<Object>> filterPrimarys(Object object) {
+        Args.notNull(object, "object");
+
+        TableMapper tm = getTableMapper(getTable());
+        if (!tm.getBeanClass().isAssignableFrom(object.getClass())) {
+            throw new IllegalStateException(String.format("The Argument %s is not instanceof %s",
+                    object.getClass().getName(), tm.getBeanClass().getName()));
+        }
+        LinkedHashMap<String, IValue<Object>> ret = new LinkedHashMap<>();
+        Map<String, ColumnDefine> ps = tm.getPrimarys();
+        for (Entry<String, ColumnDefine> e : ps.entrySet()) {
+            ColumnDefine cd = e.getValue();
+            Object value = MapperUtils.getPropertysValue(object, cd);
+            String jdbcType = converter.convert(cd.getType());
+            ret.put(cd.getName(), new ValueImpl<>(value, jdbcType));
+        }
+        return ret;
+    }
+
     protected <T> List<T> asList(T... objs) {
         if ((objs == null) || (objs.length < 1)) {
             return Collections.EMPTY_LIST;
@@ -479,6 +565,9 @@ public abstract class MapperMethods implements Serializable {
     }
 
     protected <T> List<T> removeAll(Collection<T> origin, Collection<T> remove) {
+        if ((origin == null) || origin.isEmpty()) {
+            return new ArrayList<>();
+        }
         if ((remove == null) || remove.isEmpty()) {
             return new ArrayList<>(origin);
         }
@@ -502,7 +591,7 @@ public abstract class MapperMethods implements Serializable {
     protected List<String> getFullColumns(String field, List<TableMapper> tableMappers, Flag flag) {
         List<String> ret = new ArrayList<>();
         if (StringUtils.isNotEmpty(field) && (tableMappers != null) && !tableMappers.isEmpty()) {
-            if (field.indexOf(".") == -1) {
+            if (!MapperUtils.isNestedField(field)) {
                 for (TableMapper tableMapper : tableMappers) {
                     if (tableMapper == null) {
                         continue;
@@ -543,6 +632,17 @@ public abstract class MapperMethods implements Serializable {
             }
         }
         return ret;
+    }
+
+    protected TableMapper getTableMapper(String table) {
+        List<TableMapper> tms = getTableMappers(table, null);
+        if ((tms == null) || tms.isEmpty()) {
+            return null;
+        }
+        if (1 < tms.size()) {
+            throw new IllegalStateException();
+        }
+        return tms.get(0);
     }
 
     protected List<TableMapper> getTableMappers(String table, Collection<String> propertys) {
@@ -590,4 +690,26 @@ public abstract class MapperMethods implements Serializable {
     protected abstract TableDefines getDefines();
 
     public abstract Map<Class<?>, String> getTargetTables();
+
+    protected static class ValueImpl<T> implements IValue<T> {
+
+        private final T value;
+
+        private final String jdbcType;
+
+        public ValueImpl(T value, String jdbcType) {
+            this.value = value;
+            this.jdbcType = jdbcType;
+        }
+
+        @Override
+        public T getValue() {
+            return value;
+        }
+
+        @Override
+        public String getJdbcType() {
+            return jdbcType;
+        }
+    }
 }

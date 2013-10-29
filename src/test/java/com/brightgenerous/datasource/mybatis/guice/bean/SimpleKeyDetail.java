@@ -1,12 +1,15 @@
 package com.brightgenerous.datasource.mybatis.guice.bean;
 
 import com.brightgenerous.bean.AbstractBean;
+import com.brightgenerous.orm.Ignore;
+import com.brightgenerous.orm.Ignore.Type;
 
 public class SimpleKeyDetail extends AbstractBean {
 
     private static final long serialVersionUID = 1L;
 
     @Primary
+    @Ignore(Type.INSERT)
     private Long detailNo;
 
     private Header header;

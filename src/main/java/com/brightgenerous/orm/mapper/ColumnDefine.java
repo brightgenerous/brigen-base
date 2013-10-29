@@ -1,10 +1,15 @@
 package com.brightgenerous.orm.mapper;
 
 import java.io.Serializable;
+import java.util.Arrays;
+
+import com.brightgenerous.lang.Args;
 
 public class ColumnDefine implements Serializable {
 
     private static final long serialVersionUID = 8637401974816423294L;
+
+    private static final String[] EMPTY = new String[] {};
 
     private final String name;
 
@@ -18,19 +23,27 @@ public class ColumnDefine implements Serializable {
 
     private final boolean enableUpdate;
 
+    private final boolean defaultIfNull;
+
     public ColumnDefine(String name, Class<?> type, String property, boolean enableSelect,
-            boolean enableInsert, boolean enableUpdate) {
-        this(name, type, new String[] { property }, enableSelect, enableInsert, enableUpdate);
+            boolean enableInsert, boolean enableUpdate, boolean defaultIfNull) {
+        this(name, type, new String[] { property }, enableSelect, enableInsert, enableUpdate,
+                defaultIfNull);
     }
 
     public ColumnDefine(String name, Class<?> type, String[] propertys, boolean enableSelect,
-            boolean enableInsert, boolean enableUpdate) {
+            boolean enableInsert, boolean enableUpdate, boolean defaultIfNull) {
+        Args.notEmpty(name, "name");
+        Args.notNull(type, "type");
+        Args.notEmpty(propertys, "propertys");
+
         this.name = name;
         this.type = type;
-        this.propertys = propertys;
+        this.propertys = (propertys == null) ? EMPTY : Arrays.copyOf(propertys, propertys.length);
         this.enableSelect = enableSelect;
         this.enableInsert = enableInsert;
         this.enableUpdate = enableUpdate;
+        this.defaultIfNull = defaultIfNull;
     }
 
     public String getName() {
@@ -55,5 +68,9 @@ public class ColumnDefine implements Serializable {
 
     public boolean isEnableUpdate() {
         return enableUpdate;
+    }
+
+    public boolean isDefaultIfNull() {
+        return defaultIfNull;
     }
 }

@@ -2,6 +2,7 @@ package com.brightgenerous.lang;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
 
 public class Args {
 
@@ -15,11 +16,29 @@ public class Args {
         return argument;
     }
 
+    public static <T> T notNull(T argument, String message, Object... params) {
+        if (argument == null) {
+            throw new IllegalArgumentException(Args.format(message, params));
+        }
+        return argument;
+    }
+
     public static <T extends CharSequence> T notEmpty(T argument, String name) {
         if ((argument == null) || (argument.length() < 1)) {
             throw new IllegalArgumentException("Argument '" + name + "' may not be null or empty.");
         }
         return argument;
+    }
+
+    public static <T extends CharSequence> T notEmpty(T argument, String message, Object... params) {
+        if ((argument == null) || (argument.length() < 1)) {
+            throw new IllegalArgumentException(Args.format(message, params));
+        }
+        return argument;
+    }
+
+    public static <T extends Collection<?>> T notEmpty(T collection, String name) {
+        return notEmpty(collection, "Collection '%s' may not be null or empty.", name);
     }
 
     public static <T extends Collection<?>> T notEmpty(T collection, String message,
@@ -30,8 +49,19 @@ public class Args {
         return collection;
     }
 
-    public static <T extends Collection<?>> T notEmpty(T collection, String name) {
-        return notEmpty(collection, "Collection '%s' may not be null or empty.", name);
+    public static <T extends Map<?, ?>> T notEmpty(T collection, String name) {
+        return notEmpty(collection, "Map '%s' may not be null or empty.", name);
+    }
+
+    public static <T extends Map<?, ?>> T notEmpty(T collection, String message, Object... params) {
+        if ((collection == null) || collection.isEmpty()) {
+            throw new IllegalArgumentException(Args.format(message, params));
+        }
+        return collection;
+    }
+
+    public static <T> T[] notEmpty(T[] array, String name) {
+        return notEmpty(array, "Array '%s' may not be null or empty.", name);
     }
 
     public static <T> T[] notEmpty(T[] array, String message, Object... params) {
@@ -39,10 +69,6 @@ public class Args {
             throw new IllegalArgumentException(Args.format(message, params));
         }
         return array;
-    }
-
-    public static <T> T[] notEmpty(T[] array, String name) {
-        return notEmpty(array, "Array '%s' may not be null or empty.", name);
     }
 
     public static byte lowerThan(byte max, byte value, String name) {

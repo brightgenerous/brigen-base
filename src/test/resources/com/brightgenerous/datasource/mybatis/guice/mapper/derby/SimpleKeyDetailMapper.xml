@@ -108,39 +108,63 @@
 		</where>
 	</sql>
 
-	<insert id="insert" parameterType="SimpleKeyDetail">
-		<selectKey keyProperty="detailNo" resultType="Long" order="AFTER">
+	<insert id="insert">
+		<bind name="methods" value="@com.brightgenerous.orm.mapper.MapperMethods@get('t_simple_key_detail')" />
+
+		<selectKey keyProperty="bean.detailNo" resultType="Long" order="AFTER">
 			select max(identity_val_local()) from t_simple_key_detail
 		</selectKey>
+
 		insert into
 			t_simple_key_detail (
-				header_no,
-				detail_value
+				<foreach index="key" item="value" separator=","
+						collection="methods.filterInserts(bean)">
+					${key}
+				</foreach>
 			) values (
-				#{header.headerNo, jdbcType=BIGINT},
-				#{detailValue, jdbcType=VARCHAR}
+				<foreach index="key" item="value" separator=","
+						collection="methods.filterInserts(bean)">
+					<choose><when test="value.value neq null">#{value.value}</when><otherwise>null</otherwise></choose>
+				</foreach>
 			)
 	</insert>
 
-	<update id="update" parameterType="SimpleKeyDetail">
+	<update id="update">
+		<bind name="methods" value="@com.brightgenerous.orm.mapper.MapperMethods@get('t_simple_key_detail')" />
+
 		update
 			t_simple_key_detail
+
 		set
-			detail_value = #{detailValue, jdbcType=VARCHAR}
+			<foreach index="key" item="value" separator=","
+					collection="methods.filterUpdates(bean)">
+				${key} = <choose><when test="value.value neq null">#{value.value}</when><otherwise>null</otherwise></choose>
+			</foreach>
+
 		where
-			detail_no = #{detailNo, jdbcType=BIGINT}
+			<foreach index="key" item="value" separator="and"
+					collection="methods.filterPrimarys(bean)">
+				${key} = <choose><when test="value.value neq null">#{value.value}</when><otherwise>null</otherwise></choose>
+			</foreach>
 	</update>
 
-	<delete id="delete" parameterType="SimpleKeyDetail">
+	<delete id="delete">
+		<bind name="methods" value="@com.brightgenerous.orm.mapper.MapperMethods@get('t_simple_key_detail')" />
+
 		delete from
 			t_simple_key_detail
+
 		where
-			detail_no = #{detailNo, jdbcType=BIGINT}
+			<foreach index="key" item="value" separator="and"
+					collection="methods.filterPrimarys(bean)">
+				${key} = <choose><when test="value.value neq null">#{value.value}</when><otherwise>null</otherwise></choose>
+			</foreach>
 	</delete>
 
-	<delete id="deleteByHeader" parameterType="Header">
+	<delete id="deleteByHeader">
 		delete from
 			t_simple_key_detail
+
 		where
 			header_no = #{headerNo, jdbcType=BIGINT}
 	</delete>
