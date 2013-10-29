@@ -472,8 +472,6 @@ public abstract class MapperMethods implements Serializable {
         return ret;
     }
 
-    private static final JdbcTypeConverter converter = new JdbcTypeConverter();
-
     public LinkedHashMap<String, IValue<Object>> filterInserts(Object object) {
         Args.notNull(object, "object");
 
@@ -490,8 +488,7 @@ public abstract class MapperMethods implements Serializable {
             if ((value == null) && cd.isDefaultIfNull()) {
                 continue;
             }
-            String jdbcType = converter.convert(cd.getType());
-            ret.put(cd.getName(), new ValueImpl<>(value, jdbcType));
+            ret.put(cd.getName(), new ValueImpl<>(value));
         }
         return ret;
     }
@@ -532,8 +529,7 @@ public abstract class MapperMethods implements Serializable {
             if ((value == null) && cd.isDefaultIfNull()) {
                 continue;
             }
-            String jdbcType = converter.convert(cd.getType());
-            ret.put(name, new ValueImpl<>(value, jdbcType));
+            ret.put(name, new ValueImpl<>(value));
         }
         return ret;
     }
@@ -551,8 +547,7 @@ public abstract class MapperMethods implements Serializable {
         for (Entry<String, ColumnDefine> e : ps.entrySet()) {
             ColumnDefine cd = e.getValue();
             Object value = MapperUtils.getPropertysValue(object, cd);
-            String jdbcType = converter.convert(cd.getType());
-            ret.put(cd.getName(), new ValueImpl<>(value, jdbcType));
+            ret.put(cd.getName(), new ValueImpl<>(value));
         }
         return ret;
     }
@@ -695,21 +690,13 @@ public abstract class MapperMethods implements Serializable {
 
         private final T value;
 
-        private final String jdbcType;
-
-        public ValueImpl(T value, String jdbcType) {
+        public ValueImpl(T value) {
             this.value = value;
-            this.jdbcType = jdbcType;
         }
 
         @Override
         public T getValue() {
             return value;
-        }
-
-        @Override
-        public String getJdbcType() {
-            return jdbcType;
         }
     }
 }
