@@ -38,9 +38,7 @@ import com.brightgenerous.orm.mapper.TableMapper.Flag;
  * 
  * may be, not necessary to you...
  */
-public abstract class MapperMethods implements Serializable {
-
-    private static final long serialVersionUID = 964438583312587615L;
+public abstract class MapperMethods {
 
     static class InstanceKey implements Serializable {
 

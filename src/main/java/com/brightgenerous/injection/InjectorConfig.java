@@ -1,7 +1,10 @@
 package com.brightgenerous.injection;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Provider;
@@ -34,6 +37,14 @@ public class InjectorConfig implements Serializable {
     private Class<?>[] beanPackages;
 
     private Filter<Class<?>> beanClassFilter;
+
+    // for serialize
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        if ((dbProperties != null) && !(dbProperties instanceof Serializable)) {
+            dbProperties = new HashMap<>(dbProperties); // to java.io.Serializable
+        }
+        stream.defaultWriteObject();
+    }
 
     public Class<? extends Provider<DataSource>> getDataSourceProviderType() {
         return dataSourceProviderType;

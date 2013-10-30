@@ -2,7 +2,6 @@ package com.brightgenerous.zxing.deleg;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.util.Map;
 
 import com.brightgenerous.lang.Args;
@@ -14,9 +13,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
-class ZxingEncoderImpl implements ZxingEncoder, Serializable {
-
-    private static final long serialVersionUID = 7374043022379601248L;
+class ZxingEncoderImpl implements ZxingEncoder {
 
     private final String contents;
 

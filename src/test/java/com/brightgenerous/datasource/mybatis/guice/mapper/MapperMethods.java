@@ -16,8 +16,6 @@ import com.brightgenerous.orm.mapper.TableDefines;
 
 public class MapperMethods extends com.brightgenerous.orm.mapper.MapperMethods {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     protected TableDefines getDefines() {
         return defines;

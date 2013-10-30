@@ -24,14 +24,8 @@ public class BeanUtilsTest {
         } catch (ClassCastException e) {
         }
         c3.compare(new OuterBean(), new OuterBean() {
-
-            private static final long serialVersionUID = -2551841812680981271L;
-
         });
         c3.compare(new OuterBean() {
-
-            private static final long serialVersionUID = -8849888534954766184L;
-
         }, new OuterBean());
     }
 
@@ -91,8 +85,6 @@ public class BeanUtilsTest {
 
     static class OuterBean extends AbstractBean {
 
-        private static final long serialVersionUID = -3840933230500207350L;
-
         @Primary
         private InnerBean inner;
 
@@ -129,8 +121,6 @@ public class BeanUtilsTest {
 
     static class OuterBean2 extends AbstractBean {
 
-        private static final long serialVersionUID = -3840933230500207350L;
-
         @Primary
         private InnerBean inner;
 
@@ -144,8 +134,6 @@ public class BeanUtilsTest {
     }
 
     static class InnerBean extends AbstractBean {
-
-        private static final long serialVersionUID = -3201268534961494278L;
 
         @Primary
         private String key1;

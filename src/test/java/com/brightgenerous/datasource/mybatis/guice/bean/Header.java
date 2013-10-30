@@ -8,8 +8,6 @@ import com.brightgenerous.orm.Ignore.Type;
 
 public class Header extends AbstractBean {
 
-    private static final long serialVersionUID = 1L;
-
     @Primary
     @Ignore(Type.INSERT)
     private Long headerNo;

@@ -6,8 +6,6 @@ import com.brightgenerous.orm.Ignore.Type;
 
 public class SimpleKeyDetail extends AbstractBean {
 
-    private static final long serialVersionUID = 1L;
-
     @Primary
     @Ignore(Type.INSERT)
     private Long detailNo;

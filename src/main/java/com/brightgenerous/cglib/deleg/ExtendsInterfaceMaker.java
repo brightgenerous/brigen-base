@@ -12,10 +12,11 @@ import net.sf.cglib.core.ClassEmitter;
 import net.sf.cglib.core.Constants;
 import net.sf.cglib.core.Signature;
 import net.sf.cglib.core.TypeUtils;
+import net.sf.cglib.proxy.InterfaceMaker;
 
 import com.brightgenerous.lang.Args;
 
-class ExtendsInterfaceMaker extends net.sf.cglib.proxy.InterfaceMaker {
+class ExtendsInterfaceMaker extends InterfaceMaker {
 
     private Set<Class<?>> interfaces = new LinkedHashSet<>();
 

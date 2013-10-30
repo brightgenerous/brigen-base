@@ -1,7 +1,10 @@
 package com.brightgenerous.mail;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.brightgenerous.commons.EqualsUtils;
@@ -37,6 +40,23 @@ public class MailInfo implements Serializable {
     private String bodyText;
 
     private String bodyEncode;
+
+    // for serialize
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        if ((tos != null) && !(tos instanceof Serializable)) {
+            tos = new HashSet<>(tos); // to java.io.Serializable
+        }
+        if ((ccs != null) && !(ccs instanceof Serializable)) {
+            ccs = new HashSet<>(ccs); // to java.io.Serializable
+        }
+        if ((bccs != null) && !(bccs instanceof Serializable)) {
+            bccs = new HashSet<>(bccs); // to java.io.Serializable
+        }
+        if ((replyTos != null) && !(replyTos instanceof Serializable)) {
+            replyTos = new HashSet<>(replyTos); // to java.io.Serializable
+        }
+        stream.defaultWriteObject();
+    }
 
     public Set<String> getTos() {
         return tos;

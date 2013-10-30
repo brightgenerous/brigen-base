@@ -68,8 +68,8 @@ class StringConvertFullToHalfUtils {
         return ret;
     }
 
-    // @see StringConvertHalfToFullUtils.convertToFullKana
-    private static String convertToHalfKana(char ch) {
+    // @see StringConvertHalfToFullUtils.convertToFullKatakana
+    private static String convertToHalfKatakana(char ch) {
         String ret;
         switch (ch) {
             case 'ヲ':
@@ -331,16 +331,16 @@ class StringConvertFullToHalfUtils {
         return ret;
     }
 
-    public static String convertToHalfKana(String str) {
+    public static String convertToHalfKatakana(String str) {
         String ret;
         if ((str == null) || str.isEmpty()) {
             ret = str;
         } else if (str.length() == 1) {
-            ret = convertToHalfKana(str.charAt(0));
+            ret = convertToHalfKatakana(str.charAt(0));
         } else {
             StringBuilder sb = new StringBuilder(str.length());
             for (int i = 0; i < str.length(); ++i) {
-                sb.append(convertToHalfKana(str.charAt(i)));
+                sb.append(convertToHalfKatakana(str.charAt(i)));
             }
             ret = sb.toString();
         }
@@ -551,7 +551,7 @@ class StringConvertFullToHalfUtils {
             }
         }
         {
-            String str = convertToHalfKana(ch);
+            String str = convertToHalfKatakana(ch);
             if ((1 < str.length()) || (str.charAt(0) != ch)) {
                 return str;
             }

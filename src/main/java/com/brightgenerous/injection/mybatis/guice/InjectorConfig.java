@@ -1,5 +1,9 @@
 package com.brightgenerous.injection.mybatis.guice;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -44,6 +48,14 @@ public class InjectorConfig extends com.brightgenerous.injection.InjectorConfig 
     private Boolean failFast;
 
     private Collection<Class<? extends TypeHandler<?>>> typeHandlerClasses;
+
+    // for serialize
+    private void writeObject(ObjectOutputStream stream) throws IOException {
+        if ((typeHandlerClasses != null) && !(typeHandlerClasses instanceof Serializable)) {
+            typeHandlerClasses = new ArrayList<>(typeHandlerClasses); // to java.io.Serializable
+        }
+        stream.defaultWriteObject();
+    }
 
     public Class<? extends TransactionFactory> getTransactionFactoryType() {
         return transactionFactoryType;

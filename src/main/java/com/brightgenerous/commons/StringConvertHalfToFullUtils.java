@@ -68,8 +68,8 @@ class StringConvertHalfToFullUtils {
         return ret;
     }
 
-    // @see StringConvertFullToHalfUtils#convertToHalfKana
-    private static char convertToFullKana(char ch) {
+    // @see StringConvertFullToHalfUtils#convertToHalfKatakana
+    private static char convertToFullKatakana(char ch) {
         char ret;
         switch (ch) {
             case 'ｦ':
@@ -253,7 +253,7 @@ class StringConvertHalfToFullUtils {
         return ret;
     }
 
-    private static char mergeToFullKana(char ch1, char ch2) {
+    private static char mergeToFullKatakana(char ch1, char ch2) {
         if (ch2 == 'ﾞ') {
             if ("ｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾊﾋﾌﾍﾎｳ".indexOf(ch1) != -1) {
                 switch (ch1) {
@@ -320,23 +320,23 @@ class StringConvertHalfToFullUtils {
         return ch1;
     }
 
-    public static String convertToFullKana(String str) {
+    public static String convertToFullKatakana(String str) {
         if ((str == null) || str.isEmpty()) {
             return str;
         } else if (str.length() == 1) {
-            return String.valueOf(convertToFullKana(str.charAt(0)));
+            return String.valueOf(convertToFullKatakana(str.charAt(0)));
         } else {
             StringBuilder sb = new StringBuilder(str);
             int i = 0;
             for (i = 0; i < (sb.length() - 1); ++i) {
                 char originalChar1 = sb.charAt(i);
                 char originalChar2 = sb.charAt(i + 1);
-                char mergedChar = mergeToFullKana(originalChar1, originalChar2);
+                char mergedChar = mergeToFullKatakana(originalChar1, originalChar2);
                 if (mergedChar != originalChar1) {
                     sb.setCharAt(i, mergedChar);
                     sb.deleteCharAt(i + 1);
                 } else {
-                    char convertedChar = convertToFullKana(originalChar1);
+                    char convertedChar = convertToFullKatakana(originalChar1);
                     if (convertedChar != originalChar1) {
                         sb.setCharAt(i, convertedChar);
                     }
@@ -344,7 +344,7 @@ class StringConvertHalfToFullUtils {
             }
             if (i < sb.length()) {
                 char originalChar1 = sb.charAt(i);
-                char convertedChar = convertToFullKana(originalChar1);
+                char convertedChar = convertToFullKatakana(originalChar1);
                 if (convertedChar != originalChar1) {
                     sb.setCharAt(i, convertedChar);
                 }
@@ -509,7 +509,7 @@ class StringConvertHalfToFullUtils {
     private static char mergeToFullCharacter(char ch1, char ch2) {
         {
             char c = ch1;
-            c = mergeToFullKana(ch1, ch2);
+            c = mergeToFullKatakana(ch1, ch2);
             if (ch1 != c) {
                 return c;
             }
@@ -537,7 +537,7 @@ class StringConvertHalfToFullUtils {
             }
         }
         {
-            char c = convertToFullKana(ch);
+            char c = convertToFullKatakana(ch);
             if (ch != c) {
                 return c;
             }

@@ -4,8 +4,6 @@ import com.brightgenerous.bean.AbstractBean;
 
 public class MultiKeyDetail extends AbstractBean {
 
-    private static final long serialVersionUID = 1L;
-
     @Primary
     private Header header;
 

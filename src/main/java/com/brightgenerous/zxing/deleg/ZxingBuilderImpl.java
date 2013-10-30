@@ -4,7 +4,6 @@ import static com.brightgenerous.commons.ObjectUtils.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,10 +31,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 @SuppressWarnings("deprecation")
 class ZxingBuilderImpl
         implements
-        ZxingBuilder<BarcodeFormat, ErrorCorrectionLevel, ResultPointCallback, SymbolShapeHint, Dimension, Compaction, Dimensions>,
-        Serializable {
-
-    private static final long serialVersionUID = -7998707764641680538L;
+        ZxingBuilder<BarcodeFormat, ErrorCorrectionLevel, ResultPointCallback, SymbolShapeHint, Dimension, Compaction, Dimensions> {
 
     static {
         try {

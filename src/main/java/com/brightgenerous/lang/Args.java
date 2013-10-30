@@ -10,10 +10,7 @@ public class Args {
     }
 
     public static <T> T notNull(T argument, String name) {
-        if (argument == null) {
-            throw new IllegalArgumentException("Argument '" + name + "' may not be null.");
-        }
-        return argument;
+        return notNull(argument, "Argument '%s' may not be null.", name);
     }
 
     public static <T> T notNull(T argument, String message, Object... params) {
@@ -24,10 +21,7 @@ public class Args {
     }
 
     public static <T extends CharSequence> T notEmpty(T argument, String name) {
-        if ((argument == null) || (argument.length() < 1)) {
-            throw new IllegalArgumentException("Argument '" + name + "' may not be null or empty.");
-        }
-        return argument;
+        return notEmpty(argument, "Argument '%s' may not be null or empty.", name);
     }
 
     public static <T extends CharSequence> T notEmpty(T argument, String message, Object... params) {
@@ -248,11 +242,19 @@ public class Args {
         return value;
     }
 
+    public static boolean isTrue(boolean argument, String name) {
+        return isTrue(argument, "Argument '%s' may not be false.", name);
+    }
+
     public static boolean isTrue(boolean argument, String msg, Object... params) {
         if (!argument) {
             throw new IllegalArgumentException(format(msg, params));
         }
         return argument;
+    }
+
+    public static boolean isFalse(boolean argument, String name) {
+        return isFalse(argument, "Argument '%s' may not be true.", name);
     }
 
     public static boolean isFalse(boolean argument, String msg, Object... params) {
@@ -277,7 +279,7 @@ public class Args {
         return argument;
     }
 
-    static String format(String msg, Object... params) {
+    private static String format(String msg, Object... params) {
         msg = msg.replaceAll("\\{\\}", "%s");
         return String.format(msg, params);
     }
