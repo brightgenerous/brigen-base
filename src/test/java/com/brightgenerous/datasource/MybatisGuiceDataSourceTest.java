@@ -15,11 +15,11 @@ import com.brightgenerous.datasource.mybatis.guice.mapper.Key;
 import com.brightgenerous.datasource.mybatis.guice.transaction.BrigenTransaction;
 import com.brightgenerous.orm.Condition;
 
-public class DataSourceTest {
+public class MybatisGuiceDataSourceTest {
 
     @BeforeClass
     public static void before() throws Exception {
-        DataSource.set(DerbyDataSource.class);
+        DataSource.set(MybatisGuiceDataSource.class);
         DataSource.get().initialize();
     }
 

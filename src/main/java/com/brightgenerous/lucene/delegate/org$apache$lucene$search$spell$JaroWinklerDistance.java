@@ -9,7 +9,7 @@ package com.brightgenerous.lucene.delegate;
  *     org.apache.lucene.search.spell.JaroWinklerDistance
  * 
  * edit
- *   - package org.apache.lucene.search.spell:
+ *   - package org.apache.lucene.search.spell;
  *   + //package org.apache.lucene.search.spell;
  * 
  *   - public class JaroWinklerDistance implements StringDistance {

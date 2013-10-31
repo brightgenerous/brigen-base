@@ -65,6 +65,9 @@
     <cglib.version>[2.2.2,3.0)</cglib.version>
     <derby.version>[10.10.1.1,11.0)</derby.version>
 
+    <stripes.version>[1.5,2)</stripes.version>
+    <struts2.version>[2.3.15.2,3)</struts2.version>
+
     <android.version>[4.1.1.4,5)</android.version>
 
     <jetty.version>[7.6.12.v20130726,8.0)</jetty.version>
@@ -251,11 +254,41 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derbyclient</artifactId>
+      <version>${derby.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>directory-naming</groupId>
+      <artifactId>naming-java</artifactId>
+      <version>[0.8,)</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- STRIPES DEPENDENCIES -->
+    <dependency>
+      <groupId>net.sourceforge.stripes</groupId>
+      <artifactId>stripes</artifactId>
+      <version>${stripes.version}</version>
+    </dependency>
+
+    <!-- STRUTS2 DEPENDENCIES -->
+    <dependency>
+      <groupId>org.apache.struts</groupId>
+      <artifactId>struts2-core</artifactId>
+      <version>${struts2.version}</version>
+      <optional>true</optional>
+    </dependency>
+
     <!-- ANDROID DEPENDENCIES -->
     <dependency>
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
       <version>${android.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- JETTY DEPENDENCIES -->

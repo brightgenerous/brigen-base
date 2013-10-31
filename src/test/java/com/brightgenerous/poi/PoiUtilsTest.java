@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import com.brightgenerous.poi.TestPoiWriter.SheetData;
 
-public class PoiTest {
+public class PoiUtilsTest {
 
     @Test
     public void test() throws Exception {

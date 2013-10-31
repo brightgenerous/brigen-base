@@ -1,4 +1,4 @@
-package com.brightgenerous.injection.mybatis.guice;
+package com.brightgenerous.injection.jdbc.guice;
 
 import static com.brightgenerous.commons.ObjectUtils.*;
 import static com.brightgenerous.commons.StringUtils.*;
@@ -17,35 +17,36 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import org.aopalliance.intercept.MethodInterceptor;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSessionManager;
-import org.apache.ibatis.session.TransactionIsolationLevel;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.apache.ibatis.type.TypeHandler;
-import org.mybatis.guice.MyBatisModule;
-import org.mybatis.guice.datasource.dbcp.BasicDataSourceProvider;
-import org.mybatis.guice.transactional.Transactional;
 
 import com.brightgenerous.commons.EqualsUtils;
 import com.brightgenerous.commons.HashCodeUtils;
 import com.brightgenerous.commons.ToStringUtils;
 import com.brightgenerous.injection.Filter;
 import com.brightgenerous.injection.ImplResolver;
-import com.brightgenerous.injection.mybatis.TransactionalMethodInterceptor;
+import com.brightgenerous.injection.jdbc.SqlSession;
+import com.brightgenerous.injection.jdbc.SqlSessionManager;
+import com.brightgenerous.injection.jdbc.ThreadLocalSqlSession;
+import com.brightgenerous.injection.jdbc.Transactional;
+import com.brightgenerous.injection.jdbc.TransactionalMethodInterceptor;
 import com.brightgenerous.resolver.ResolverUtils;
-import com.brightgenerous.resolver.ResolverUtils.Matcher;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Provider;
 import com.google.inject.Scopes;
 import com.google.inject.matcher.AbstractMatcher;
-import com.google.inject.name.Names;
+import com.google.inject.matcher.Matcher;
+import com.google.inject.matcher.Matchers;
 
 public abstract class InjectorFactory implements com.brightgenerous.datasource.InjectorFactory,
         Serializable {
 
-    private static final long serialVersionUID = -1832713081625601163L;
+    private static final long serialVersionUID = -6126615644662058251L;
 
     private volatile InjectorConfig config;
 
@@ -117,13 +118,13 @@ public abstract class InjectorFactory implements com.brightgenerous.datasource.I
 
     @Override
     public void verify() {
-        SqlSessionManager sqlSessionManager = getInjector().getInstance(SqlSessionManager.class);
-        if (sqlSessionManager != null) {
-            try (SqlSessionManager ssm = sqlSessionManager) {
-                if (!ssm.isManagedSessionStarted()) {
-                    ssm.startManagedSession(ExecutorType.SIMPLE, (TransactionIsolationLevel) null);
+        SqlSession sqlSession = getInjector().getInstance(SqlSession.class);
+        if (sqlSession != null) {
+            try (SqlSession ss = sqlSession) {
+                if (!ss.isStarted()) {
+                    ss.start(null);
                 }
-                Connection connection = ssm.getConnection();
+                Connection connection = ss.getConnection();
                 if (connection != null) {
                     try (Connection conn = connection) {
                         DatabaseMetaData dmd = conn.getMetaData();
@@ -132,7 +133,7 @@ public abstract class InjectorFactory implements com.brightgenerous.datasource.I
                                 throw new IllegalStateException("compareBeanToTable returns false.");
                             }
                         }
-                        ssm.rollback(true);
+                        ss.rollback();
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -160,85 +161,39 @@ public abstract class InjectorFactory implements com.brightgenerous.datasource.I
     }
 
     protected Injector createInjector(final InjectorConfig config, final boolean rollbackOnly) {
-        return Guice.createInjector(new MyBatisModule() {
+        return Guice.createInjector(new AbstractModule() {
 
             @Override
-            protected void initialize() {
-                if (config.getDataSourceProviderType() != null) {
-                    bindDataSourceProviderType(config.getDataSourceProviderType());
-                } else {
-                    bindDataSourceProviderType(BasicDataSourceProvider.class);
-                }
-                if (config.getTransactionFactoryType() != null) {
-                    bindTransactionFactoryType(config.getTransactionFactoryType());
-                } else {
-                    bindTransactionFactoryType(JdbcTransactionFactory.class);
-                }
-
+            protected void configure() {
                 {
-                    // properties
-                    if ((config.getDbProperties() != null) && !config.getDbProperties().isEmpty()) {
-                        Names.bindProperties(binder(), config.getDbProperties());
-                    }
-                    if (isNotEmpty(config.getEnvironmentId())) {
-                        environmentId(config.getEnvironmentId());
-                    }
-                    if (config.getCacheEnabled() != null) {
-                        useCacheEnabled(config.getCacheEnabled().booleanValue());
-                    }
-                    if (config.getLazyLoadingEnabled() != null) {
-                        lazyLoadingEnabled(config.getLazyLoadingEnabled().booleanValue());
-                    }
-                    if (config.getAggressiveLazyLoading() != null) {
-                        aggressiveLazyLoading(config.getAggressiveLazyLoading().booleanValue());
-                    }
-                    if (config.getMultipleResultSetsEnabled() != null) {
-                        multipleResultSetsEnabled(config.getMultipleResultSetsEnabled()
-                                .booleanValue());
-                    }
-                    if (config.getUseColumnLabel() != null) {
-                        useColumnLabel(config.getUseColumnLabel().booleanValue());
-                    }
-                    if (config.getUseGeneratedKeys() != null) {
-                        useGeneratedKeys(config.getUseGeneratedKeys().booleanValue());
-                    }
-                    if (config.getAutoMappingBehavior() != null) {
-                        autoMappingBehavior(config.getAutoMappingBehavior());
-                    }
-                    if (config.getDefaultExecutorType() != null) {
-                        executorType(config.getDefaultExecutorType());
-                    }
-                    if (config.getMapUnderscoreToCamelCase() != null) {
-                        mapUnderscoreToCamelCase(config.getMapUnderscoreToCamelCase()
-                                .booleanValue());
-                    }
-                    if (config.getLocalCacheScope() != null) {
-                        localCacheScope(config.getLocalCacheScope());
-                    }
-                    if (config.getFailFast() != null) {
-                        failFast(config.getFailFast().booleanValue());
-                    }
-                }
+                    bind(ThreadLocalSqlSession.class).in(Scopes.SINGLETON);
+                    bind(SqlSession.class).to(ThreadLocalSqlSession.class);
+                    bind(SqlSessionManager.class).to(ThreadLocalSqlSession.class);
 
-                {
-                    Set<Class<?>> beanClazzs = getBeanClasses(config);
-                    if (isNotNoSize(beanClazzs)) {
-                        addSimpleAliases(beanClazzs);
-                    }
-                }
+                    bind(DataSource.class).toProvider(new Provider<DataSource>() {
 
+                        @Override
+                        public DataSource get() {
+                            try {
+                                return (DataSource) new InitialContext().lookup(config
+                                        .getDataSourceName());
+                            } catch (NamingException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }).in(Scopes.SINGLETON);
+                }
                 {
                     Set<Class<?>> mapperClazzs = getMapperClasses(config);
                     if (isNotNoSize(mapperClazzs)) {
                         ImplResolver resolver = config.getMapperImplResolver();
                         if (resolver == null) {
-                            addMapperClasses(mapperClazzs);
+                            for (Class<?> mapperClazz : mapperClazzs) {
+                                bind(mapperClazz);
+                            }
                         } else {
                             Map<Class<?>, Set<Class<?>>> implClazzMap = getImplClassMap(resolver,
                                     mapperClazzs);
-
-                            addMapperClasses(implClazzMap.keySet());
-
                             for (Entry<Class<?>, Set<Class<?>>> e : implClazzMap.entrySet()) {
                                 @SuppressWarnings("rawtypes")
                                 Class implClazz = e.getKey();
@@ -250,55 +205,60 @@ public abstract class InjectorFactory implements com.brightgenerous.datasource.I
                         }
                     }
                 }
-
                 {
-                    Collection<Class<? extends TypeHandler<?>>> typeHandlers = config
-                            .getTypeHandlerClasses();
-                    if (isNotNoSize(typeHandlers)) {
-                        addTypeHandlersClasses(typeHandlers);
-                    }
-                }
-            }
-        }, new AbstractModule() {
+                    final Set<Class<?>> transactionClazzs = getTransactionClasses(config);
+                    if (isNotNoSize(transactionClazzs)) {
+                        MethodInterceptor selectInterceptor;
+                        MethodInterceptor updateInterceptor;
+                        if (rollbackOnly) {
+                            selectInterceptor = new TransactionalMethodInterceptor(true) {
 
-            @Override
-            protected void configure() {
-                final Set<Class<?>> transactionClazzs = getTransactionClasses(config);
-                if (isNotNoSize(transactionClazzs)) {
-                    MethodInterceptor updateInterceptor;
-                    if (rollbackOnly) {
-                        updateInterceptor = new TransactionalMethodInterceptor() {
+                                @Transactional(rollbackOnly = true)
+                                @Override
+                                protected void setting() {
+                                }
+                            };
+                            updateInterceptor = new TransactionalMethodInterceptor() {
 
-                            @Transactional(rollbackOnly = true)
+                                @Transactional(rollbackOnly = true)
+                                @Override
+                                protected void setting() {
+                                }
+                            };
+                        } else {
+                            selectInterceptor = new TransactionalMethodInterceptor(true);
+                            updateInterceptor = new TransactionalMethodInterceptor();
+                        }
+                        binder().requestInjection(selectInterceptor);
+                        binder().requestInjection(updateInterceptor);
+                        Matcher<Class<?>> classMatcher = new AbstractMatcher<Class<?>>() {
+
                             @Override
-                            protected void setting() {
+                            public boolean matches(Class<?> arg0) {
+                                if (arg0.isAnnotation() || arg0.isEnum()) {
+                                    return false;
+                                }
+                                return transactionClazzs.contains(arg0);
                             }
                         };
-                    } else {
-                        updateInterceptor = new TransactionalMethodInterceptor();
-                    }
-                    binder().requestInjection(updateInterceptor);
-                    binder().bindInterceptor(new AbstractMatcher<Class<?>>() {
+                        Matcher<Method> methodMatcher = new AbstractMatcher<Method>() {
 
-                        @Override
-                        public boolean matches(Class<?> arg0) {
-                            if (arg0.isAnnotation() || arg0.isEnum()) {
-                                return false;
+                            private final Filter<Method> filter = config
+                                    .getTransactionMethodFilter();
+
+                            @Override
+                            public boolean matches(Method arg0) {
+                                return (filter == null) || filter.filter(arg0);
                             }
-                            return transactionClazzs.contains(arg0);
+                        };
+
+                        binder().bindInterceptor(classMatcher, Matchers.not(methodMatcher),
+                                selectInterceptor);
+                        binder().bindInterceptor(classMatcher, methodMatcher, updateInterceptor);
+
+                        for (Class<?> transactionClazz : transactionClazzs) {
+                            bind(transactionClazz).in(Scopes.SINGLETON);
                         }
-                    }, new AbstractMatcher<Method>() {
-
-                        private final Filter<Method> filter = config.getTransactionMethodFilter();
-
-                        @Override
-                        public boolean matches(Method arg0) {
-                            return (filter == null) || filter.filter(arg0);
-                        }
-                    }, updateInterceptor);
-
-                    for (Class<?> transactionClazz : transactionClazzs) {
-                        bind(transactionClazz).in(Scopes.SINGLETON);
                     }
                 }
             }
@@ -313,7 +273,7 @@ public abstract class InjectorFactory implements com.brightgenerous.datasource.I
                 final Filter<Class<?>> filter = config.getTransactionClassFilter();
                 for (String pkg : packages) {
                     final String regex = getPackageRegex(pkg);
-                    ret.addAll(ResolverUtils.find(new Matcher() {
+                    ret.addAll(ResolverUtils.find(new ResolverUtils.Matcher() {
 
                         @Override
                         public boolean matches(Class<?> arg0) {
@@ -340,7 +300,7 @@ public abstract class InjectorFactory implements com.brightgenerous.datasource.I
                 final Filter<Class<?>> filter = config.getMapperClassFilter();
                 for (String pkg : packages) {
                     final String regex = getPackageRegex(pkg);
-                    ret.addAll(ResolverUtils.find(new Matcher() {
+                    ret.addAll(ResolverUtils.find(new ResolverUtils.Matcher() {
 
                         @Override
                         public boolean matches(Class<?> arg0) {
@@ -367,7 +327,7 @@ public abstract class InjectorFactory implements com.brightgenerous.datasource.I
                 final Filter<Class<?>> filter = config.getBeanClassFilter();
                 for (String pkg : packages) {
                     final String regex = getPackageRegex(pkg);
-                    ret.addAll(ResolverUtils.find(new Matcher() {
+                    ret.addAll(ResolverUtils.find(new ResolverUtils.Matcher() {
 
                         @Override
                         public boolean matches(Class<?> arg0) {

@@ -9,7 +9,7 @@ package com.brightgenerous.lucene.delegate;
  *     org.apache.lucene.search.spell.LevensteinDistance
  * 
  * edit
- *   - package org.apache.lucene.search.spell:
+ *   - package org.apache.lucene.search.spell;
  *   + //package org.apache.lucene.search.spell;
  * 
  *   - import org.apache.lucene.search.spell.StringDistance;

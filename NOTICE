@@ -354,3 +354,20 @@ Library, waive my copyright to it, placing it in the public domain.
 The library comes with absolutely no warranty.
 
  END
+ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  from
+   groupId: org.apache.struts
+   artifactId: struts2-core
+
+--------------------------------------------------
+<<END
+
+Struts 2 Core
+Copyright 2000-2013 Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+END
+ 

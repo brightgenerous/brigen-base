@@ -50,6 +50,8 @@ build/
 target/
 tmp/
 
+test/
+
 # Other project #
 #################
 *.pydevproject
