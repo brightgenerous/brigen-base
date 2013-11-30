@@ -161,6 +161,12 @@
       <version>${pdfbox.version}</version>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>fontbox</artifactId>
+      <version>${pdfbox.version}</version>
+      <optional>true</optional>
+    </dependency>
 
     <!-- GOOGLE GSON DEPENDENCIES -->
     <dependency>

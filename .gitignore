@@ -45,12 +45,12 @@ Thumbs.db
 .metadata/
 .project
 .settings/
-bin/
-build/
-target/
-tmp/
+/bin/
+/build/
+/target/
+/tmp/
 
-test/
+/test/
 
 # Other project #
 #################
