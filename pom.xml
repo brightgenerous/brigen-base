@@ -279,6 +279,7 @@
       <groupId>net.sourceforge.stripes</groupId>
       <artifactId>stripes</artifactId>
       <version>${stripes.version}</version>
+      <optional>true</optional>
     </dependency>
 
     <!-- STRUTS2 DEPENDENCIES -->

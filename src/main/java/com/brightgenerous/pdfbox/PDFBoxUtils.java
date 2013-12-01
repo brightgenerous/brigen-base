@@ -6,28 +6,36 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-
-import org.apache.pdfbox.pdfparser.PDFParser;
+import java.net.URL;
 
 import com.brightgenerous.lang.Args;
+import com.brightgenerous.pdfbox.deleg.PDFBoxUtility;
 
+@SuppressWarnings("deprecation")
 public class PDFBoxUtils {
+
+    public static boolean useful() {
+        return PDFBoxUtility.USEFUL;
+    }
 
     private PDFBoxUtils() {
     }
 
     public static boolean isPdf(byte[] bytes) {
-        if (bytes == null) {
-            return false;
-        }
+        Args.notNull(bytes, "bytes");
 
         return isPdf(new ByteArrayInputStream(bytes));
     }
 
+    public static boolean isPdf(String fileName) {
+        Args.notNull(fileName, "fileName");
+
+        return isPdf(new File(fileName));
+    }
+
     public static boolean isPdf(File file) {
-        if (file == null) {
-            return false;
-        }
+        Args.notNull(file, "file");
+
         if (!file.exists()) {
             return false;
         }
@@ -43,15 +51,20 @@ public class PDFBoxUtils {
         return ret;
     }
 
-    public static boolean isPdf(InputStream inputStream) {
-        Args.notNull(inputStream, "inputStream");
+    public static boolean isPdf(URL url) {
+        Args.notNull(url, "url");
 
         boolean ret = false;
-        try (InputStream is = inputStream) {
-            new PDFParser(is).parse();
-            ret = true;
+        try (InputStream inputStream = url.openStream()) {
+            ret = isPdf(inputStream);
         } catch (IOException e) {
         }
         return ret;
+    }
+
+    public static boolean isPdf(InputStream inputStream) {
+        Args.notNull(inputStream, "inputStream");
+
+        return PDFBoxUtility.isPdf(inputStream);
     }
 }
