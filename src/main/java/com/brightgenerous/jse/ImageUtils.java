@@ -5,6 +5,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 
+@Deprecated
 public class ImageUtils {
 
     private ImageUtils() {

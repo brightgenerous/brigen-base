@@ -107,6 +107,26 @@ public class JsonUtility {
         return getDelegater().getType(obj);
     }
 
+    public static <T> T parseJson(String json, Class<T> clazz, boolean serializeNulls)
+            throws JsonParseException {
+        return getDelegater().parseJson(json, clazz, serializeNulls);
+    }
+
+    public static <T> T parseJson(String json, Class<T> clazz, String dateFormat,
+            boolean serializeNulls) throws JsonParseException {
+        return getDelegater().parseJson(json, clazz, dateFormat, serializeNulls);
+    }
+
+    public static <T> T parseJson(String json, Type type, boolean serializeNulls)
+            throws JsonParseException {
+        return getDelegater().parseJson(json, type, serializeNulls);
+    }
+
+    public static <T> T parseJson(String json, Type type, String dateFormat, boolean serializeNulls)
+            throws JsonParseException {
+        return getDelegater().parseJson(json, type, dateFormat, serializeNulls);
+    }
+
     public static <T> T parseJson(Reader json, Class<T> clazz, boolean serializeNulls)
             throws JsonParseException {
         return getDelegater().parseJson(json, clazz, serializeNulls);

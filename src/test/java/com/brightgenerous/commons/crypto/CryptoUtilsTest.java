@@ -9,8 +9,6 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.brightgenerous.commons.ObjectUtils;
-import com.brightgenerous.commons.crypto.CryptoUtils.CryptoAlgorithm;
-import com.brightgenerous.commons.crypto.CryptoUtils.HashAlgorithm;
 
 public class CryptoUtilsTest {
 
