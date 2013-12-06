@@ -1,4 +1,4 @@
-package com.brightgenerous.pdfbox.deleg;
+package com.brightgenerous.pdfbox.delegate;
 
 import java.io.IOException;
 import java.io.InputStream;

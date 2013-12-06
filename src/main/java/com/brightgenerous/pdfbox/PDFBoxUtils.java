@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import com.brightgenerous.lang.Args;
-import com.brightgenerous.pdfbox.deleg.PDFBoxUtility;
+import com.brightgenerous.pdfbox.delegate.PDFBoxUtility;
 
 @SuppressWarnings("deprecation")
 public class PDFBoxUtils {

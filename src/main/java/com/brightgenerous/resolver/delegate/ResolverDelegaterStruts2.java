@@ -1,14 +1,13 @@
-package com.brightgenerous.resolver.deleg;
+package com.brightgenerous.resolver.delegate;
 
 import java.util.Set;
 
-import org.apache.ibatis.io.ResolverUtil;
-import org.apache.ibatis.io.ResolverUtil.Test;
-
-import com.brightgenerous.resolver.deleg.ResolverUtility.Matcher;
+import com.brightgenerous.resolver.delegate.ResolverUtility.Matcher;
+import com.opensymphony.xwork2.util.ResolverUtil;
+import com.opensymphony.xwork2.util.ResolverUtil.ClassTest;
 
 @SuppressWarnings("deprecation")
-class ResolverDelegaterMybatis implements ResolverDelegater {
+class ResolverDelegaterStruts2 implements ResolverDelegater {
 
     {
         check();
@@ -17,7 +16,7 @@ class ResolverDelegaterMybatis implements ResolverDelegater {
     private static void check() {
         try {
             Class.forName(ResolverUtil.class.getName());
-            Class.forName(Test.class.getName());
+            Class.forName(ClassTest.class.getName());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -26,7 +25,8 @@ class ResolverDelegaterMybatis implements ResolverDelegater {
     @Override
     public <T> Set<Class<? extends T>> find(Matcher matcher, String packageName) {
         ResolverUtil<T> util = new ResolverUtil<>();
-        return util.find(new AdaptTest(matcher), packageName).getClasses();
+        util.find(new AdaptTest(matcher), packageName);
+        return util.getClasses();
     }
 
     @Override
@@ -34,10 +34,11 @@ class ResolverDelegaterMybatis implements ResolverDelegater {
             ClassLoader classloader) {
         ResolverUtil<T> util = new ResolverUtil<>();
         util.setClassLoader(classloader);
-        return util.find(new AdaptTest(matcher), packageName).getClasses();
+        util.find(new AdaptTest(matcher), packageName);
+        return util.getClasses();
     }
 
-    private static class AdaptTest implements Test {
+    private static class AdaptTest extends ClassTest {
 
         private final Matcher matcher;
 
@@ -46,7 +47,7 @@ class ResolverDelegaterMybatis implements ResolverDelegater {
         }
 
         @Override
-        public boolean matches(Class<?> type) {
+        public boolean matches(Class type) {
             return matcher.matches(type);
         }
     }

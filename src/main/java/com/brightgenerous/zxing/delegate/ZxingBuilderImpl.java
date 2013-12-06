@@ -1,4 +1,4 @@
-package com.brightgenerous.zxing.deleg;
+package com.brightgenerous.zxing.delegate;
 
 import static com.brightgenerous.commons.ObjectUtils.*;
 

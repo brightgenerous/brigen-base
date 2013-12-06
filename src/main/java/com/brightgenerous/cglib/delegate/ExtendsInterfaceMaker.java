@@ -1,4 +1,4 @@
-package com.brightgenerous.cglib.deleg;
+package com.brightgenerous.cglib.delegate;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;

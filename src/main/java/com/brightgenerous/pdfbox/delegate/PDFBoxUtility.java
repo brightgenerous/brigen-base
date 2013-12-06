@@ -1,30 +1,31 @@
-package com.brightgenerous.cglib.deleg;
+package com.brightgenerous.pdfbox.delegate;
 
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Deprecated
-public class CglibUtility {
+public class PDFBoxUtility {
 
     private static final Logger log = Logger.getAnonymousLogger();
 
     public static final boolean USEFUL;
 
-    private static final CglibDelegater delegater;
+    private static final PDFBoxDelegater delegater;
 
     private static final RuntimeException rex;
 
     static {
-        CglibDelegater tmp = null;
-        RuntimeException ex = null;
+        PDFBoxDelegater tmp = null;
         boolean useful = false;
+        RuntimeException ex = null;
         try {
-            tmp = new CglibDelegaterImpl();
+            tmp = new PDFBoxDelegaterImpl();
             useful = true;
         } catch (NoClassDefFoundError | RuntimeException e) {
 
             if (log.isLoggable(Level.INFO)) {
-                log.log(Level.INFO, "does not resolve javax mail");
+                log.log(Level.INFO, "does not resolve jxl api");
             }
 
             if (e instanceof RuntimeException) {
@@ -42,13 +43,13 @@ public class CglibUtility {
         rex = ex;
     }
 
-    private CglibUtility() {
+    private PDFBoxUtility() {
     }
 
-    public static Class<?> defineInterface(String name, Class<?>... supers) {
+    public static boolean isPdf(InputStream inputStream) {
         if (delegater == null) {
             throw rex;
         }
-        return delegater.defineInterface(name, supers);
+        return delegater.isPdf(inputStream);
     }
 }

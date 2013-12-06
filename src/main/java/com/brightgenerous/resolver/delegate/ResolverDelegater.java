@@ -1,8 +1,8 @@
-package com.brightgenerous.resolver.deleg;
+package com.brightgenerous.resolver.delegate;
 
 import java.util.Set;
 
-import com.brightgenerous.resolver.deleg.ResolverUtility.Matcher;
+import com.brightgenerous.resolver.delegate.ResolverUtility.Matcher;
 
 @SuppressWarnings("deprecation")
 interface ResolverDelegater {

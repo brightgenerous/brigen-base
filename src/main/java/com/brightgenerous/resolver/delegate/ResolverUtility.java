@@ -1,4 +1,4 @@
-package com.brightgenerous.resolver.deleg;
+package com.brightgenerous.resolver.delegate;
 
 import java.util.Set;
 import java.util.logging.Level;

@@ -1,4 +1,4 @@
-package com.brightgenerous.resolver.deleg;
+package com.brightgenerous.resolver.delegate;
 
 //@formatter:off
 /*

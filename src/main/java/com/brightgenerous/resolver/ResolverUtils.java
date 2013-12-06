@@ -2,7 +2,7 @@ package com.brightgenerous.resolver;
 
 import java.util.Set;
 
-import com.brightgenerous.resolver.deleg.ResolverUtility;
+import com.brightgenerous.resolver.delegate.ResolverUtility;
 
 @SuppressWarnings("deprecation")
 public class ResolverUtils {

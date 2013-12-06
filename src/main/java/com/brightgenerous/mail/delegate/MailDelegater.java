@@ -1,4 +1,4 @@
-package com.brightgenerous.mail.deleg;
+package com.brightgenerous.mail.delegate;
 
 import java.util.Properties;
 

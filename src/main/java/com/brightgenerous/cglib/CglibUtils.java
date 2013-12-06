@@ -1,6 +1,6 @@
 package com.brightgenerous.cglib;
 
-import com.brightgenerous.cglib.deleg.CglibUtility;
+import com.brightgenerous.cglib.delegate.CglibUtility;
 
 @SuppressWarnings("deprecation")
 public class CglibUtils {

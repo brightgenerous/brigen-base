@@ -1,11 +1,11 @@
-package com.brightgenerous.resolver.deleg;
+package com.brightgenerous.resolver.delegate;
 
 import java.util.Set;
 
 import net.sourceforge.stripes.util.ResolverUtil;
 import net.sourceforge.stripes.util.ResolverUtil.Test;
 
-import com.brightgenerous.resolver.deleg.ResolverUtility.Matcher;
+import com.brightgenerous.resolver.delegate.ResolverUtility.Matcher;
 
 @SuppressWarnings("deprecation")
 class ResolverDelegaterStripes implements ResolverDelegater {

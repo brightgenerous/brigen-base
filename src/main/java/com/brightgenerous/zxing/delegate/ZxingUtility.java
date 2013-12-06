@@ -1,4 +1,4 @@
-package com.brightgenerous.zxing.deleg;
+package com.brightgenerous.zxing.delegate;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

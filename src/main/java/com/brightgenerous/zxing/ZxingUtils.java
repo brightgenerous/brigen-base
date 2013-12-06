@@ -1,6 +1,6 @@
 package com.brightgenerous.zxing;
 
-import com.brightgenerous.zxing.deleg.ZxingUtility;
+import com.brightgenerous.zxing.delegate.ZxingUtility;
 
 @SuppressWarnings("deprecation")
 public class ZxingUtils {

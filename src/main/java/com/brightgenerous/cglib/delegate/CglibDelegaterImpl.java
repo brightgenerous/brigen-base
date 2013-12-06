@@ -1,4 +1,4 @@
-package com.brightgenerous.cglib.deleg;
+package com.brightgenerous.cglib.delegate;
 
 import static com.brightgenerous.commons.ObjectUtils.*;
 import net.sf.cglib.core.NamingPolicy;

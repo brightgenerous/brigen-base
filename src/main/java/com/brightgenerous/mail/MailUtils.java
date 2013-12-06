@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.brightgenerous.commons.EqualsUtils;
 import com.brightgenerous.commons.HashCodeUtils;
 import com.brightgenerous.commons.ToStringUtils;
-import com.brightgenerous.mail.deleg.MailUtility;
+import com.brightgenerous.mail.delegate.MailUtility;
 
 @SuppressWarnings("deprecation")
 public class MailUtils implements Serializable {
