@@ -7,6 +7,18 @@ import org.apache.pdfbox.pdfparser.PDFParser;
 
 class PDFBoxDelegaterImpl implements PDFBoxDelegater {
 
+    {
+        check();
+    }
+
+    private static void check() {
+        try {
+            Class.forName(PDFParser.class.getName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public boolean isPdf(InputStream inputStream) {
         boolean ret = false;

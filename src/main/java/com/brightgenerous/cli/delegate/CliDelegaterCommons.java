@@ -8,14 +8,30 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 
+import com.brightgenerous.cli.CliParseException;
 import com.brightgenerous.cli.Option;
-import com.brightgenerous.cli.ParseException;
 import com.brightgenerous.cli.ParseResult;
 
 class CliDelegaterCommons implements CliDelegater {
 
+    {
+        check();
+    }
+
+    private static void check() {
+        try {
+            Class.forName(BasicParser.class.getName());
+            Class.forName(CommandLine.class.getName());
+            Class.forName(CommandLineParser.class.getName());
+            Class.forName(Options.class.getName());
+            Class.forName(org.apache.commons.cli.Option.class.getName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
-    public ParseResult parse(List<Option> options, String[] args) throws ParseException {
+    public ParseResult parse(List<Option> options, String[] args) throws CliParseException {
         CommandLineParser parser = new BasicParser();
         Options opts = new Options();
         if ((options != null) && !options.isEmpty()) {
@@ -47,7 +63,7 @@ class CliDelegaterCommons implements CliDelegater {
         try {
             line = parser.parse(opts, args);
         } catch (org.apache.commons.cli.ParseException e) {
-            throw new ParseException(e);
+            throw new CliParseException(e);
         }
         return new ParseResultCommons(line);
     }

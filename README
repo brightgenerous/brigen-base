@@ -87,6 +87,29 @@ I represent the Acknowledgements
          com.opensymphony.xwork2.util.ResolverUtil
        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+  - com.brightgenerous.csv.delegate.au$com$bytecode$opencsv$CSVParser
+      from
+       groupId: net.sf.opencsv
+       artifactId: opencsv
+       version: 2.3
+         au.com.bytecode.opencsv.CSVParser
+       License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  - com.brightgenerous.csv.delegate.au$com$bytecode$opencsv$CSVReader
+      from
+       groupId: net.sf.opencsv
+       artifactId: opencsv
+       version: 2.3
+         au.com.bytecode.opencsv.CSVReader
+       License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+  - com.brightgenerous.csv.delegate.au$com$bytecode$opencsv$CSVWriter
+      from
+       groupId: net.sf.opencsv
+       artifactId: opencsv
+       version: 2.3
+         au.com.bytecode.opencsv.CSVWriter
+       License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 usage
 

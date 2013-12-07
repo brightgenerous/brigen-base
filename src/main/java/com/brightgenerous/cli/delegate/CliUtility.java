@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.brightgenerous.cli.CliParseException;
 import com.brightgenerous.cli.Option;
-import com.brightgenerous.cli.ParseException;
 import com.brightgenerous.cli.ParseResult;
 
 @Deprecated
@@ -29,7 +29,7 @@ public class CliUtility {
         } catch (NoClassDefFoundError | RuntimeException e) {
 
             if (log.isLoggable(Level.INFO)) {
-                log.log(Level.INFO, "does not resolve commons cli api");
+                log.log(Level.INFO, "does not resolve apache commons CLI");
             }
 
             if (e instanceof RuntimeException) {
@@ -50,7 +50,7 @@ public class CliUtility {
     private CliUtility() {
     }
 
-    public static ParseResult parse(List<Option> options, String[] args) throws ParseException {
+    public static ParseResult parse(List<Option> options, String[] args) throws CliParseException {
         if (delegater == null) {
             throw rex;
         }

@@ -16,6 +16,7 @@ public class CliUtils implements Serializable {
         return CliUtility.USEFUL;
     }
 
+    // must be java.io.Serializable
     private final List<Option> options;
 
     protected CliUtils(List<Option> options) {
@@ -38,7 +39,7 @@ public class CliUtils implements Serializable {
         return new CliUtils(options);
     }
 
-    public ParseResult parse(String[] args) throws ParseException {
+    public ParseResult parse(String[] args) throws CliParseException {
         return CliUtility.parse(options, args);
     }
 }

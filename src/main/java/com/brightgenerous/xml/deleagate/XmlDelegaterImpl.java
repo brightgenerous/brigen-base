@@ -12,6 +12,19 @@ import com.brightgenerous.xml.XmlUnmarshalException;
 
 class XmlDelegaterImpl implements XmlDelegater {
 
+    {
+        check();
+    }
+
+    private static void check() {
+        try {
+            Class.forName(DataBindingException.class.getName());
+            Class.forName(JAXB.class.getName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public <T> T unmarshal(String xml, Class<T> clazz) throws XmlUnmarshalException {
         try {
