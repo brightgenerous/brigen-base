@@ -42,7 +42,6 @@ public class ZipUtility {
                 ex = new RuntimeException(e);
             }
         }
-
         USEFUL = useful;
         delegater = tmp;
         rex = ex;

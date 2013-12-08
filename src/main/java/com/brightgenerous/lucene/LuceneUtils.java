@@ -551,7 +551,7 @@ public class LuceneUtils implements Serializable {
 
         private final boolean jaroWinkler;
 
-        private final Map<String, Double> cache = Collections
+        private final Map<String, Double> caches = Collections
                 .synchronizedMap(new WeakHashMap<String, Double>());
 
         public StringComparator(String value, boolean levenstein, boolean jaroWinkler) {
@@ -584,13 +584,13 @@ public class LuceneUtils implements Serializable {
         }
 
         private double distance(String obj) {
-            Double ret = cache.get(obj);
+            Double ret = caches.get(obj);
             if (ret == null) {
-                synchronized (cache) {
-                    ret = cache.get(obj);
+                synchronized (caches) {
+                    ret = caches.get(obj);
                     if (ret == null) {
                         ret = Double.valueOf(getDistance(obj, value, levenstein, jaroWinkler));
-                        cache.put(obj, ret);
+                        caches.put(obj, ret);
                     }
                 }
             }
@@ -608,7 +608,7 @@ public class LuceneUtils implements Serializable {
 
         private final boolean jaroWinkler;
 
-        private final Map<T, Holder> cache = Collections
+        private final Map<T, Holder> caches = Collections
                 .synchronizedMap(new WeakHashMap<T, Holder>());
 
         public ExtractComparator(String value, Extracter<T> extracter, boolean levenstein,
@@ -643,15 +643,15 @@ public class LuceneUtils implements Serializable {
         }
 
         private Holder distance(T obj) {
-            Holder ret = cache.get(obj);
+            Holder ret = caches.get(obj);
             if (ret == null) {
-                synchronized (cache) {
-                    ret = cache.get(obj);
+                synchronized (caches) {
+                    ret = caches.get(obj);
                     if (ret == null) {
                         ret = new Holder();
                         ret.value = extracter.extract(obj);
                         ret.distance = getDistance(ret.value, value, levenstein, jaroWinkler);
-                        cache.put(obj, ret);
+                        caches.put(obj, ret);
                     }
                 }
             }

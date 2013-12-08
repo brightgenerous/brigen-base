@@ -23,34 +23,15 @@ public class ResolverUtils {
         return ResolverUtility.STRUTS2;
     }
 
-    public interface Matcher {
-
-        boolean matches(Class<?> type);
-    }
-
     private ResolverUtils() {
     }
 
     public static <T> Set<Class<? extends T>> find(Matcher matcher, String packageName) {
-        return ResolverUtility.find(new AdaptMatcher(matcher), packageName);
+        return ResolverUtility.find(matcher, packageName);
     }
 
     public static <T> Set<Class<? extends T>> find(Matcher matcher, String packageName,
             ClassLoader classloader) {
-        return ResolverUtility.find(new AdaptMatcher(matcher), packageName, classloader);
-    }
-
-    private static class AdaptMatcher implements ResolverUtility.Matcher {
-
-        private final Matcher matcher;
-
-        public AdaptMatcher(Matcher matcher) {
-            this.matcher = matcher;
-        }
-
-        @Override
-        public boolean matches(Class<?> type) {
-            return matcher.matches(type);
-        }
+        return ResolverUtility.find(matcher, packageName, classloader);
     }
 }

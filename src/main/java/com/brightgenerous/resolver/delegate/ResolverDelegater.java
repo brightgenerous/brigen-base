@@ -2,9 +2,8 @@ package com.brightgenerous.resolver.delegate;
 
 import java.util.Set;
 
-import com.brightgenerous.resolver.delegate.ResolverUtility.Matcher;
+import com.brightgenerous.resolver.Matcher;
 
-@SuppressWarnings("deprecation")
 interface ResolverDelegater {
 
     <T> Set<Class<? extends T>> find(Matcher matcher, String packageName);

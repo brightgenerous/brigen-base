@@ -5,9 +5,8 @@ import java.util.Set;
 import net.sourceforge.stripes.util.ResolverUtil;
 import net.sourceforge.stripes.util.ResolverUtil.Test;
 
-import com.brightgenerous.resolver.delegate.ResolverUtility.Matcher;
+import com.brightgenerous.resolver.Matcher;
 
-@SuppressWarnings("deprecation")
 class ResolverDelegaterStripes implements ResolverDelegater {
 
     {

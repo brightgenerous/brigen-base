@@ -2,11 +2,10 @@ package com.brightgenerous.resolver.delegate;
 
 import java.util.Set;
 
-import com.brightgenerous.resolver.delegate.ResolverUtility.Matcher;
+import com.brightgenerous.resolver.Matcher;
 import com.opensymphony.xwork2.util.ResolverUtil;
 import com.opensymphony.xwork2.util.ResolverUtil.ClassTest;
 
-@SuppressWarnings("deprecation")
 class ResolverDelegaterStruts2 implements ResolverDelegater {
 
     {
@@ -46,6 +45,7 @@ class ResolverDelegaterStruts2 implements ResolverDelegater {
             this.matcher = matcher;
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
         public boolean matches(Class type) {
             return matcher.matches(type);

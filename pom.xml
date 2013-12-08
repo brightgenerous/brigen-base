@@ -38,6 +38,8 @@
     <commons-lang.version>[3.1,4.0)</commons-lang.version>
     <commons-cli.version>[1.2,2.0)</commons-cli.version>
 
+    <zip4j-version>[1.3.1,2.0)</zip4j-version>
+
     <jruby.version>[1.7.4,2.0)</jruby.version>
 
     <javax.mail.version>[1.4.7,2.0)</javax.mail.version>
@@ -55,10 +57,11 @@
     <gson.version>[2.2.4,3.0)</gson.version>
     <jsonic.version>[1.3.0,2.0)</jsonic.version>
     <jackson.version>[1.9.11,2.0)</jackson.version>
+    <json-lib.version>[2.0,3.0)</json-lib.version>
 
     <opencsv.version>[2.3,3.0)</opencsv.version>
 
-    <zxing.version>[2.2,3)</zxing.version>
+    <zxing.version>[2.2,3.0)</zxing.version>
 
     <guice.version>3.0</guice.version>
     <mybatis.version>[3.2.3,4.0)</mybatis.version>
@@ -68,8 +71,10 @@
     <cglib.version>[2.2.2,3.0)</cglib.version>
     <derby.version>[10.10.1.1,11.0)</derby.version>
 
-    <stripes.version>[1.5,2)</stripes.version>
-    <struts2.version>[2.3.15.2,3)</struts2.version>
+    <naming-version>[0.8,)</naming-version>
+
+    <stripes.version>[1.5.7,2)</stripes.version>
+    <struts2.version>[2.3.15.3,3)</struts2.version>
 
     <android.version>[4.1.1.4,5)</android.version>
 
@@ -109,7 +114,8 @@
     <dependency>
       <groupId>net.lingala.zip4j</groupId>
       <artifactId>zip4j</artifactId>
-      <version>[1.2.3,2.0)</version>
+      <version>${zip4j-version}</version>
+      <optional>true</optional>
     </dependency>
 
     <!-- JRUBY DEPENDENCIES -->
@@ -215,7 +221,7 @@
     <dependency>
       <groupId>net.sf.json-lib</groupId>
       <artifactId>json-lib</artifactId>
-      <version>[2.0,3.0)</version>
+      <version>${json-lib.version}</version>
       <classifier>jdk15</classifier>
       <optional>true</optional>
     </dependency>
@@ -306,7 +312,7 @@
     <dependency>
       <groupId>directory-naming</groupId>
       <artifactId>naming-java</artifactId>
-      <version>[0.8,)</version>
+      <version>${naming-version}</version>
       <scope>test</scope>
     </dependency>
 

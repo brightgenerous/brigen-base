@@ -273,7 +273,7 @@ public abstract class InjectorFactory implements com.brightgenerous.datasource.I
                 final Filter<Class<?>> filter = config.getTransactionClassFilter();
                 for (String pkg : packages) {
                     final String regex = getPackageRegex(pkg);
-                    ret.addAll(ResolverUtils.find(new ResolverUtils.Matcher() {
+                    ret.addAll(ResolverUtils.find(new com.brightgenerous.resolver.Matcher() {
 
                         @Override
                         public boolean matches(Class<?> arg0) {
@@ -300,7 +300,7 @@ public abstract class InjectorFactory implements com.brightgenerous.datasource.I
                 final Filter<Class<?>> filter = config.getMapperClassFilter();
                 for (String pkg : packages) {
                     final String regex = getPackageRegex(pkg);
-                    ret.addAll(ResolverUtils.find(new ResolverUtils.Matcher() {
+                    ret.addAll(ResolverUtils.find(new com.brightgenerous.resolver.Matcher() {
 
                         @Override
                         public boolean matches(Class<?> arg0) {
@@ -327,7 +327,7 @@ public abstract class InjectorFactory implements com.brightgenerous.datasource.I
                 final Filter<Class<?>> filter = config.getBeanClassFilter();
                 for (String pkg : packages) {
                     final String regex = getPackageRegex(pkg);
-                    ret.addAll(ResolverUtils.find(new ResolverUtils.Matcher() {
+                    ret.addAll(ResolverUtils.find(new com.brightgenerous.resolver.Matcher() {
 
                         @Override
                         public boolean matches(Class<?> arg0) {

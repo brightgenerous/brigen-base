@@ -5,9 +5,8 @@ import java.util.Set;
 import org.apache.ibatis.io.ResolverUtil;
 import org.apache.ibatis.io.ResolverUtil.Test;
 
-import com.brightgenerous.resolver.delegate.ResolverUtility.Matcher;
+import com.brightgenerous.resolver.Matcher;
 
-@SuppressWarnings("deprecation")
 class ResolverDelegaterMybatis implements ResolverDelegater {
 
     {

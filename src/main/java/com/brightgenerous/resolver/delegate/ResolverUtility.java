@@ -4,6 +4,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.brightgenerous.resolver.Matcher;
+
 @Deprecated
 public class ResolverUtility {
 
@@ -87,11 +89,6 @@ public class ResolverUtility {
     }
 
     private ResolverUtility() {
-    }
-
-    public interface Matcher {
-
-        boolean matches(Class<?> type);
     }
 
     public static <T> Set<Class<? extends T>> find(Matcher matcher, String packageName) {
