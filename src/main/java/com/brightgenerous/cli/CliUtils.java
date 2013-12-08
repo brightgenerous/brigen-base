@@ -17,9 +17,9 @@ public class CliUtils implements Serializable {
     }
 
     // must be java.io.Serializable
-    private final List<Option> options;
+    private final List<CliOption> options;
 
-    protected CliUtils(List<Option> options) {
+    protected CliUtils(List<CliOption> options) {
         if ((options == null) || options.isEmpty()) {
             this.options = new ArrayList<>();
         } else {
@@ -27,19 +27,19 @@ public class CliUtils implements Serializable {
         }
     }
 
-    public static CliUtils get(Option... options) {
+    public static CliUtils get(CliOption... options) {
         return getInstance(Arrays.asList(options));
     }
 
-    public static CliUtils get(List<Option> options) {
+    public static CliUtils get(List<CliOption> options) {
         return getInstance(options);
     }
 
-    protected static CliUtils getInstance(List<Option> options) {
+    protected static CliUtils getInstance(List<CliOption> options) {
         return new CliUtils(options);
     }
 
-    public ParseResult parse(String[] args) throws CliParseException {
+    public ParseResult parse(String[] args) throws CliException {
         return CliUtility.parse(options, args);
     }
 }

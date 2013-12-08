@@ -9,13 +9,13 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import com.brightgenerous.json.JsonParseException;
+import com.brightgenerous.json.JsonException;
 import com.brightgenerous.json.TypeToken;
 
 public class JsonDelegaterTest {
 
     @Test
-    public void formatJson() throws JsonParseException, ParseException {
+    public void formatJson() throws JsonException, ParseException {
         String dateFormat = "yyyy-MM-dd";
         JsonDelegater[] delegs = new JsonDelegater[] { new JsonDelegaterGson(),
                 new JsonDelegaterJackson(), new JsonDelegaterJsonic() };

@@ -6,10 +6,11 @@ import java.util.List;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-import com.brightgenerous.cli.CliParseException;
-import com.brightgenerous.cli.Option;
+import com.brightgenerous.cli.CliException;
+import com.brightgenerous.cli.CliOption;
 import com.brightgenerous.cli.ParseResult;
 
 class CliDelegaterCommons implements CliDelegater {
@@ -24,20 +25,19 @@ class CliDelegaterCommons implements CliDelegater {
             Class.forName(CommandLine.class.getName());
             Class.forName(CommandLineParser.class.getName());
             Class.forName(Options.class.getName());
-            Class.forName(org.apache.commons.cli.Option.class.getName());
+            Class.forName(Option.class.getName());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public ParseResult parse(List<Option> options, String[] args) throws CliParseException {
+    public ParseResult parse(List<CliOption> options, String[] args) throws CliException {
         CommandLineParser parser = new BasicParser();
         Options opts = new Options();
         if ((options != null) && !options.isEmpty()) {
-            for (Option option : options) {
-                org.apache.commons.cli.Option opt = new org.apache.commons.cli.Option(option.opt(),
-                        option.description());
+            for (CliOption option : options) {
+                Option opt = new Option(option.opt(), option.description());
                 if (option.longOpt() != null) {
                     opt.setLongOpt(option.longOpt());
                 }
@@ -63,7 +63,7 @@ class CliDelegaterCommons implements CliDelegater {
         try {
             line = parser.parse(opts, args);
         } catch (org.apache.commons.cli.ParseException e) {
-            throw new CliParseException(e);
+            throw new CliException(e);
         }
         return new ParseResultCommons(line);
     }

@@ -105,6 +105,13 @@
       <optional>true</optional>
     </dependency>
 
+    <!-- ZIP4J DEPENDENCIES -->
+    <dependency>
+      <groupId>net.lingala.zip4j</groupId>
+      <artifactId>zip4j</artifactId>
+      <version>[1.2.3,2.0)</version>
+    </dependency>
+
     <!-- JRUBY DEPENDENCIES -->
     <dependency>
       <groupId>org.jruby</groupId>

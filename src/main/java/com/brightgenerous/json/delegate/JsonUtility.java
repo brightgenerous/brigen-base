@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.brightgenerous.json.JsonParseException;
+import com.brightgenerous.json.JsonException;
 
 @Deprecated
 public class JsonUtility {
@@ -108,42 +108,42 @@ public class JsonUtility {
     }
 
     public static <T> T parseJson(String json, Class<T> clazz, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return getDelegater().parseJson(json, clazz, serializeNulls);
     }
 
     public static <T> T parseJson(String json, Class<T> clazz, String dateFormat,
-            boolean serializeNulls) throws JsonParseException {
+            boolean serializeNulls) throws JsonException {
         return getDelegater().parseJson(json, clazz, dateFormat, serializeNulls);
     }
 
     public static <T> T parseJson(String json, Type type, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return getDelegater().parseJson(json, type, serializeNulls);
     }
 
     public static <T> T parseJson(String json, Type type, String dateFormat, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return getDelegater().parseJson(json, type, dateFormat, serializeNulls);
     }
 
     public static <T> T parseJson(Reader json, Class<T> clazz, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return getDelegater().parseJson(json, clazz, serializeNulls);
     }
 
     public static <T> T parseJson(Reader json, Class<T> clazz, String dateFormat,
-            boolean serializeNulls) throws JsonParseException {
+            boolean serializeNulls) throws JsonException {
         return getDelegater().parseJson(json, clazz, dateFormat, serializeNulls);
     }
 
     public static <T> T parseJson(Reader json, Type type, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return getDelegater().parseJson(json, type, serializeNulls);
     }
 
     public static <T> T parseJson(Reader json, Type type, String dateFormat, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return getDelegater().parseJson(json, type, dateFormat, serializeNulls);
     }
 

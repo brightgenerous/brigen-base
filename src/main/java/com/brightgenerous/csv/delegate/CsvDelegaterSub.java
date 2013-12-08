@@ -8,8 +8,7 @@ import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.brightgenerous.csv.CsvFormatException;
-import com.brightgenerous.csv.CsvParseException;
+import com.brightgenerous.csv.CsvException;
 import com.brightgenerous.csv.IDataConverter;
 import com.brightgenerous.csv.IFormatStrategy;
 import com.brightgenerous.csv.IParseStrategy;
@@ -17,12 +16,12 @@ import com.brightgenerous.csv.IParseStrategy;
 class CsvDelegaterSub implements CsvDelegater {
 
     @Override
-    public <T> List<T> parse(String csv, IParseStrategy<T> strategy) throws CsvParseException {
+    public <T> List<T> parse(String csv, IParseStrategy<T> strategy) throws CsvException {
         return parse(new StringReader(csv), strategy);
     }
 
     @Override
-    public <T> List<T> parse(Reader csv, IParseStrategy<T> strategy) throws CsvParseException {
+    public <T> List<T> parse(Reader csv, IParseStrategy<T> strategy) throws CsvException {
         List<T> ret = new LinkedList<>();
         try (CSVReader reader = new CSVReader(csv, strategy.getSeparator(), strategy.getQuote(),
                 strategy.getEscape(), strategy.getSkipLines(), strategy.getStrictQuotes(),
@@ -33,13 +32,13 @@ class CsvDelegaterSub implements CsvDelegater {
                 ret.add(converter.convertToData(line));
             }
         } catch (IOException e) {
-            throw new CsvParseException(e);
+            throw new CsvException(e);
         }
         return ret;
     }
 
     @Override
-    public <T> String format(List<T> datas, IFormatStrategy<T> strategy) throws CsvFormatException {
+    public <T> String format(List<T> datas, IFormatStrategy<T> strategy) throws CsvException {
         StringWriter sw = new StringWriter();
         format(datas, strategy, sw);
         return sw.toString();
@@ -47,7 +46,7 @@ class CsvDelegaterSub implements CsvDelegater {
 
     @Override
     public <T> void format(List<T> datas, IFormatStrategy<T> strategy, Writer out)
-            throws CsvFormatException {
+            throws CsvException {
         try (CSVWriter writer = new CSVWriter(out, strategy.getSeparator(), strategy.getQuote(),
                 strategy.getEscape(), strategy.getLineEnd())) {
             IDataConverter<T> converter = strategy.getConverter();
@@ -61,7 +60,7 @@ class CsvDelegaterSub implements CsvDelegater {
                 writer.writeNext(converter.convertToLine(data));
             }
         } catch (IOException e) {
-            throw new CsvFormatException(e);
+            throw new CsvException(e);
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.brightgenerous.poi.writer;
 
-import static com.brightgenerous.poi.PoiUtils.*;
+import static com.brightgenerous.poi.PoiMethods.*;
 
 import java.io.IOException;
 import java.io.InputStream;

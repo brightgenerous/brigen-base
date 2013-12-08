@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
-import com.brightgenerous.json.JsonParseException;
+import com.brightgenerous.json.JsonException;
 
 class JsonDelegaterJackson implements JsonDelegater {
 
@@ -39,67 +39,65 @@ class JsonDelegaterJackson implements JsonDelegater {
 
     @Override
     public <T> T parseJson(String json, Class<T> clazz, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return parseJson(json, clazz, null, serializeNulls);
     }
 
     @Override
     public <T> T parseJson(String json, Class<T> clazz, String dateFormat, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         try {
             return create(dateFormat, serializeNulls).readValue(json, clazz);
         } catch (IOException e) {
-            throw new JsonParseException(e);
+            throw new JsonException(e);
         }
     }
 
     @Override
-    public <T> T parseJson(String json, Type type, boolean serializeNulls)
-            throws JsonParseException {
+    public <T> T parseJson(String json, Type type, boolean serializeNulls) throws JsonException {
         return parseJson(json, type, null, serializeNulls);
     }
 
     @Override
     public <T> T parseJson(String json, Type type, String dateFormat, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         try {
             ObjectMapper mapper = create(dateFormat, serializeNulls);
             return mapper.readValue(json, mapper.constructType(type));
         } catch (IOException e) {
-            throw new JsonParseException(e);
+            throw new JsonException(e);
         }
     }
 
     @Override
     public <T> T parseJson(Reader json, Class<T> clazz, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return parseJson(json, clazz, null, serializeNulls);
     }
 
     @Override
     public <T> T parseJson(Reader json, Class<T> clazz, String dateFormat, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         try {
             return create(dateFormat, serializeNulls).readValue(json, clazz);
         } catch (IOException e) {
-            throw new JsonParseException(e);
+            throw new JsonException(e);
         }
     }
 
     @Override
-    public <T> T parseJson(Reader json, Type type, boolean serializeNulls)
-            throws JsonParseException {
+    public <T> T parseJson(Reader json, Type type, boolean serializeNulls) throws JsonException {
         return parseJson(json, type, null, serializeNulls);
     }
 
     @Override
     public <T> T parseJson(Reader json, Type type, String dateFormat, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         try {
             ObjectMapper mapper = create(dateFormat, serializeNulls);
             return mapper.readValue(json, mapper.constructType(type));
         } catch (IOException e) {
-            throw new JsonParseException(e);
+            throw new JsonException(e);
         }
     }
 

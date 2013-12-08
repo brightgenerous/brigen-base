@@ -58,19 +58,19 @@ public class JsonUtils implements Serializable {
         return new JsonUtils(dateFormat, serializeNulls);
     }
 
-    public <T> T parseJson(String json, Class<T> clazz) throws JsonParseException {
+    public <T> T parseJson(String json, Class<T> clazz) throws JsonException {
         return parseJson(json, clazz, dateFormat, serializeNulls);
     }
 
-    public <T> T parseJson(String json, Type type) throws JsonParseException {
+    public <T> T parseJson(String json, Type type) throws JsonException {
         return parseJson(json, type, dateFormat, serializeNulls);
     }
 
-    public <T> T parseJson(Reader json, Class<T> clazz) throws JsonParseException {
+    public <T> T parseJson(Reader json, Class<T> clazz) throws JsonException {
         return parseJson(json, clazz, dateFormat, serializeNulls);
     }
 
-    public <T> T parseJson(Reader json, Type type) throws JsonParseException {
+    public <T> T parseJson(Reader json, Type type) throws JsonException {
         return parseJson(json, type, dateFormat, serializeNulls);
     }
 
@@ -83,62 +83,60 @@ public class JsonUtils implements Serializable {
     }
 
     public static <T> T parseJson(String json, Class<T> clazz, String dateFormat)
-            throws JsonParseException {
+            throws JsonException {
         return JsonUtility.parseJson(json, clazz, dateFormat, DEFAULT_SERIALIZE_NULLS);
     }
 
     public static <T> T parseJson(String json, Class<T> clazz, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return JsonUtility.parseJson(json, clazz, serializeNulls);
     }
 
     public static <T> T parseJson(String json, Class<T> clazz, String dateFormat,
-            boolean serializeNulls) throws JsonParseException {
+            boolean serializeNulls) throws JsonException {
         return JsonUtility.parseJson(json, clazz, dateFormat, serializeNulls);
     }
 
-    public static <T> T parseJson(String json, Type type, String dateFormat)
-            throws JsonParseException {
+    public static <T> T parseJson(String json, Type type, String dateFormat) throws JsonException {
         return JsonUtility.parseJson(json, type, dateFormat, DEFAULT_SERIALIZE_NULLS);
     }
 
     public static <T> T parseJson(String json, Type type, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return JsonUtility.parseJson(json, type, serializeNulls);
     }
 
     public static <T> T parseJson(String json, Type type, String dateFormat, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return JsonUtility.parseJson(json, type, dateFormat, serializeNulls);
     }
 
     public static <T> T parseJson(Reader json, Class<T> clazz, String dateFormat)
-            throws JsonParseException {
+            throws JsonException {
         return JsonUtility.parseJson(json, clazz, dateFormat, DEFAULT_SERIALIZE_NULLS);
     }
 
     public static <T> T parseJson(Reader json, Class<T> clazz, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return JsonUtility.parseJson(json, clazz, serializeNulls);
     }
 
     public static <T> T parseJson(Reader json, Class<T> clazz, String dateFormat,
-            boolean serializeNulls) throws JsonParseException {
+            boolean serializeNulls) throws JsonException {
         return JsonUtility.parseJson(json, clazz, dateFormat, serializeNulls);
     }
 
-    public static <T> T parseJson(Reader json, Type type, String dateFormat)
-            throws JsonParseException {
+    public static <T> T parseJson(Reader json, Type type, String dateFormat) throws JsonException {
         return JsonUtility.parseJson(json, type, dateFormat, DEFAULT_SERIALIZE_NULLS);
     }
 
     public static <T> T parseJson(Reader json, Type type, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return JsonUtility.parseJson(json, type, serializeNulls);
     }
 
     public static <T> T parseJson(Reader json, Type type, String dateFormat, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return JsonUtility.parseJson(json, type, dateFormat, serializeNulls);
     }
 

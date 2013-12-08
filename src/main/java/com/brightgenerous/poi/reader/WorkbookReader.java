@@ -9,7 +9,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.brightgenerous.lang.Args;
-import com.brightgenerous.poi.PoiUtils;
+import com.brightgenerous.poi.PoiMethods;
 
 public class WorkbookReader implements IWorkbookReader {
 
@@ -29,7 +29,7 @@ public class WorkbookReader implements IWorkbookReader {
     public void read(InputStream is) throws IOException, InvalidFormatException {
         Workbook workbook;
         try (InputStream stream = is) {
-            workbook = PoiUtils.readIfWrap(is);
+            workbook = PoiMethods.readIfWrap(is);
         }
         IWorkbookReaderStrategy strategy = getWorkbookStrategy();
         Iterator<ISheetReaderStrategy> itr = strategy.getSheetStrategys();

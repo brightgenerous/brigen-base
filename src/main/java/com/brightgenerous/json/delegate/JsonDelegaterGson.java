@@ -4,7 +4,7 @@ import java.io.Reader;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-import com.brightgenerous.json.JsonParseException;
+import com.brightgenerous.json.JsonException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -38,65 +38,63 @@ class JsonDelegaterGson implements JsonDelegater {
 
     @Override
     public <T> T parseJson(String json, Class<T> clazz, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return parseJson(json, clazz, null, serializeNulls);
     }
 
     @Override
     public <T> T parseJson(String json, Class<T> clazz, String dateFormat, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         try {
             return create(dateFormat, serializeNulls).fromJson(json, clazz);
         } catch (JsonSyntaxException e) {
-            throw new JsonParseException(e);
+            throw new JsonException(e);
         }
     }
 
     @Override
-    public <T> T parseJson(String json, Type type, boolean serializeNulls)
-            throws JsonParseException {
+    public <T> T parseJson(String json, Type type, boolean serializeNulls) throws JsonException {
         return parseJson(json, type, null, serializeNulls);
     }
 
     @Override
     public <T> T parseJson(String json, Type type, String dateFormat, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         try {
             return create(dateFormat, serializeNulls).fromJson(json, type);
         } catch (JsonSyntaxException e) {
-            throw new JsonParseException(e);
+            throw new JsonException(e);
         }
     }
 
     @Override
     public <T> T parseJson(Reader json, Class<T> clazz, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         return parseJson(json, clazz, null, serializeNulls);
     }
 
     @Override
     public <T> T parseJson(Reader json, Class<T> clazz, String dateFormat, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         try {
             return create(dateFormat, serializeNulls).fromJson(json, clazz);
         } catch (JsonSyntaxException e) {
-            throw new JsonParseException(e);
+            throw new JsonException(e);
         }
     }
 
     @Override
-    public <T> T parseJson(Reader json, Type type, boolean serializeNulls)
-            throws JsonParseException {
+    public <T> T parseJson(Reader json, Type type, boolean serializeNulls) throws JsonException {
         return parseJson(json, type, null, serializeNulls);
     }
 
     @Override
     public <T> T parseJson(Reader json, Type type, String dateFormat, boolean serializeNulls)
-            throws JsonParseException {
+            throws JsonException {
         try {
             return create(dateFormat, serializeNulls).fromJson(json, type);
         } catch (JsonSyntaxException e) {
-            throw new JsonParseException(e);
+            throw new JsonException(e);
         }
     }
 

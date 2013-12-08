@@ -21,7 +21,7 @@ public class CliUtilsBuilder {
 
     private Character valueSeparator;
 
-    private final List<Option> options = new ArrayList<>();
+    private final List<CliOption> options = new ArrayList<>();
 
     protected CliUtilsBuilder() {
     }
@@ -71,7 +71,7 @@ public class CliUtilsBuilder {
     }
 
     public CliUtilsBuilder add() {
-        options.add(new Option(opt, longOpt, args, required, optionalArg, argName, description,
+        options.add(new CliOption(opt, longOpt, args, required, optionalArg, argName, description,
                 valueSeparator));
         opt = null;
         longOpt = null;

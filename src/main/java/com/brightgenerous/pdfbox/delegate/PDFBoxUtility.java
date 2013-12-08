@@ -25,7 +25,7 @@ public class PDFBoxUtility {
         } catch (NoClassDefFoundError | RuntimeException e) {
 
             if (log.isLoggable(Level.INFO)) {
-                log.log(Level.INFO, "does not resolve jxl api");
+                log.log(Level.INFO, "does not resolve pdfbox");
             }
 
             if (e instanceof RuntimeException) {
@@ -46,10 +46,14 @@ public class PDFBoxUtility {
     private PDFBoxUtility() {
     }
 
-    public static boolean isPdf(InputStream inputStream) {
+    private static PDFBoxDelegater getDelegater() {
         if (delegater == null) {
             throw rex;
         }
-        return delegater.isPdf(inputStream);
+        return delegater;
+    }
+
+    public static boolean isPdf(InputStream inputStream) {
+        return getDelegater().isPdf(inputStream);
     }
 }

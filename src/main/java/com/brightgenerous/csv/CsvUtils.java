@@ -39,19 +39,19 @@ public class CsvUtils<T> implements Serializable {
         return new CsvUtils<>(parseStrategy, formatStrategy);
     }
 
-    public List<T> parse(String csv) throws CsvParseException {
+    public List<T> parse(String csv) throws CsvException {
         return CsvUtility.parse(csv, parseStrategy);
     }
 
-    public List<T> parse(Reader csv) throws CsvParseException {
+    public List<T> parse(Reader csv) throws CsvException {
         return CsvUtility.parse(csv, parseStrategy);
     }
 
-    public String format(List<T> datas) throws CsvFormatException {
+    public String format(List<T> datas) throws CsvException {
         return CsvUtility.format(datas, formatStrategy);
     }
 
-    public void format(List<T> datas, Writer out) throws CsvFormatException {
+    public void format(List<T> datas, Writer out) throws CsvException {
         CsvUtility.format(datas, formatStrategy, out);
     }
 }

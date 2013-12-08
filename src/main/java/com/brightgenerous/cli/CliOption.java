@@ -2,7 +2,7 @@ package com.brightgenerous.cli;
 
 import java.io.Serializable;
 
-public class Option implements Serializable {
+public class CliOption implements Serializable {
 
     private static final long serialVersionUID = -3095077503243126133L;
 
@@ -22,8 +22,8 @@ public class Option implements Serializable {
 
     private final Character valueSeparator;
 
-    public Option(String opt, String longOpt, Integer args, Boolean required, Boolean optionalArg,
-            String argName, String description, Character valueSeparator) {
+    public CliOption(String opt, String longOpt, Integer args, Boolean required,
+            Boolean optionalArg, String argName, String description, Character valueSeparator) {
         this.opt = opt;
         this.longOpt = longOpt;
         this.args = args;

@@ -9,7 +9,7 @@ import org.junit.Test;
 public class JsonUtilsTest {
 
     @Test
-    public void formatJson() throws JsonParseException {
+    public void formatJson() throws JsonException {
 
         assertTrue(JsonUtils.gson());
         assertFalse(JsonUtils.jsonic());

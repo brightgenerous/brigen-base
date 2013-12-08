@@ -1,6 +1,6 @@
 package com.brightgenerous.poi;
 
-import static com.brightgenerous.poi.PoiUtils.*;
+import static com.brightgenerous.poi.PoiMethods.*;
 import static org.apache.poi.ss.usermodel.CellStyle.*;
 
 import java.io.IOException;

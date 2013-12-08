@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.brightgenerous.csv.CsvFormatException;
-import com.brightgenerous.csv.CsvParseException;
+import com.brightgenerous.csv.CsvException;
 import com.brightgenerous.csv.IFormatStrategy;
 import com.brightgenerous.csv.IParseStrategy;
 
@@ -29,7 +28,7 @@ public class CsvUtility {
         } catch (NoClassDefFoundError | RuntimeException e) {
 
             if (log.isLoggable(Level.INFO)) {
-                log.log(Level.INFO, "does not resolve open csv");
+                log.log(Level.INFO, "does not resolve opencsv");
             }
 
             if (e instanceof RuntimeException) {
@@ -49,23 +48,20 @@ public class CsvUtility {
     private CsvUtility() {
     }
 
-    public static <T> List<T> parse(String csv, IParseStrategy<T> strategy)
-            throws CsvParseException {
+    public static <T> List<T> parse(String csv, IParseStrategy<T> strategy) throws CsvException {
         return delegater.parse(csv, strategy);
     }
 
-    public static <T> List<T> parse(Reader csv, IParseStrategy<T> strategy)
-            throws CsvParseException {
+    public static <T> List<T> parse(Reader csv, IParseStrategy<T> strategy) throws CsvException {
         return delegater.parse(csv, strategy);
     }
 
-    public static <T> String format(List<T> datas, IFormatStrategy<T> strategy)
-            throws CsvFormatException {
+    public static <T> String format(List<T> datas, IFormatStrategy<T> strategy) throws CsvException {
         return delegater.format(datas, strategy);
     }
 
     public static <T> void format(List<T> datas, IFormatStrategy<T> strategy, Writer out)
-            throws CsvFormatException {
+            throws CsvException {
         delegater.format(datas, strategy, out);
     }
 }

@@ -5,8 +5,7 @@ import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.brightgenerous.xml.XmlMarshalException;
-import com.brightgenerous.xml.XmlUnmarshalException;
+import com.brightgenerous.xml.XmlException;
 
 @Deprecated
 public class XmlUtility {
@@ -54,19 +53,19 @@ public class XmlUtility {
         return delegater;
     }
 
-    public static <T> T unmarshal(String xml, Class<T> clazz) throws XmlUnmarshalException {
+    public static <T> T unmarshal(String xml, Class<T> clazz) throws XmlException {
         return getDelegater().unmarshal(xml, clazz);
     }
 
-    public static <T> T unmarshal(Reader xml, Class<T> clazz) throws XmlUnmarshalException {
+    public static <T> T unmarshal(Reader xml, Class<T> clazz) throws XmlException {
         return getDelegater().unmarshal(xml, clazz);
     }
 
-    public static String marshal(Object obj) {
+    public static String marshal(Object obj) throws XmlException {
         return getDelegater().marshal(obj);
     }
 
-    public static void marshal(Object obj, Writer out) throws XmlMarshalException {
+    public static void marshal(Object obj, Writer out) throws XmlException {
         getDelegater().marshal(obj, out);
     }
 }

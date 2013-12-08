@@ -18,19 +18,19 @@ public class XmlUtils implements Serializable {
     private XmlUtils() {
     }
 
-    public static <T> T unmarshal(String xml, Class<T> clazz) throws XmlUnmarshalException {
+    public static <T> T unmarshal(String xml, Class<T> clazz) throws XmlException {
         return XmlUtility.unmarshal(xml, clazz);
     }
 
-    public static <T> T unmarshal(Reader xml, Class<T> clazz) throws XmlUnmarshalException {
+    public static <T> T unmarshal(Reader xml, Class<T> clazz) throws XmlException {
         return XmlUtility.unmarshal(xml, clazz);
     }
 
-    public static String marshal(Object obj) {
+    public static String marshal(Object obj) throws XmlException {
         return XmlUtility.marshal(obj);
     }
 
-    public static void marshal(Object obj, Writer out) throws XmlMarshalException {
+    public static void marshal(Object obj, Writer out) throws XmlException {
         XmlUtility.marshal(obj, out);
     }
 }

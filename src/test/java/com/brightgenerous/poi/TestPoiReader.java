@@ -1,7 +1,7 @@
 package com.brightgenerous.poi;
 
 import static com.brightgenerous.commons.StringUtils.*;
-import static com.brightgenerous.poi.PoiUtils.*;
+import static com.brightgenerous.poi.PoiMethods.*;
 
 import java.io.IOException;
 import java.io.InputStream;
