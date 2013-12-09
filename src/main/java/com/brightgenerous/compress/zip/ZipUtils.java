@@ -20,7 +20,16 @@ public class ZipUtils {
         ZipUtility.addFile(zip, file);
     }
 
+    public static void addFile(File zip, File file, DeflateLevel defLevel) throws ZipException {
+        ZipUtility.addFile(zip, file);
+    }
+
     public static void addFile(File zip, File file, String password) throws ZipException {
+        ZipUtility.addFile(zip, file, password);
+    }
+
+    public static void addFile(File zip, File file, String password, DeflateLevel defLevel)
+            throws ZipException {
         ZipUtility.addFile(zip, file, password);
     }
 
@@ -28,7 +37,17 @@ public class ZipUtils {
         ZipUtility.addFiles(zip, files);
     }
 
+    public static void addFiles(File zip, List<File> files, DeflateLevel defLevel)
+            throws ZipException {
+        ZipUtility.addFiles(zip, files);
+    }
+
     public static void addFiles(File zip, List<File> files, String password) throws ZipException {
+        ZipUtility.addFiles(zip, files, password);
+    }
+
+    public static void addFiles(File zip, List<File> files, String password, DeflateLevel defLevel)
+            throws ZipException {
         ZipUtility.addFiles(zip, files, password);
     }
 
@@ -38,7 +57,17 @@ public class ZipUtils {
     }
 
     public static void addFile(File zip, InputStream inputStream, String fileNameInZip,
+            DeflateLevel defLevel) throws ZipException {
+        ZipUtility.addFile(zip, inputStream, fileNameInZip);
+    }
+
+    public static void addFile(File zip, InputStream inputStream, String fileNameInZip,
             String password) throws ZipException {
+        ZipUtility.addFile(zip, inputStream, fileNameInZip, password);
+    }
+
+    public static void addFile(File zip, InputStream inputStream, String fileNameInZip,
+            String password, DeflateLevel defLevel) throws ZipException {
         ZipUtility.addFile(zip, inputStream, fileNameInZip, password);
     }
 
@@ -46,7 +75,16 @@ public class ZipUtils {
         ZipUtility.addFolder(zip, folder);
     }
 
+    public static void addFolder(File zip, File folder, DeflateLevel defLevel) throws ZipException {
+        ZipUtility.addFolder(zip, folder);
+    }
+
     public static void addFolder(File zip, File folder, String password) throws ZipException {
+        ZipUtility.addFolder(zip, folder, password);
+    }
+
+    public static void addFolder(File zip, File folder, String password, DeflateLevel defLevel)
+            throws ZipException {
         ZipUtility.addFolder(zip, folder, password);
     }
 

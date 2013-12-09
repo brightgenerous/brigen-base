@@ -1,15 +1,12 @@
 package com.brightgenerous.xml;
 
 import java.io.Reader;
-import java.io.Serializable;
 import java.io.Writer;
 
 import com.brightgenerous.xml.deleagate.XmlUtility;
 
 @SuppressWarnings("deprecation")
-public class XmlUtils implements Serializable {
-
-    private static final long serialVersionUID = -8083708706919305178L;
+public class XmlUtils {
 
     public static boolean useful() {
         return XmlUtility.USEFUL;

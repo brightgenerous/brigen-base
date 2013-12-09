@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.brightgenerous.commons.EqualsUtils;
+import com.brightgenerous.commons.HashCodeUtils;
+import com.brightgenerous.commons.ToStringUtils;
+
 public class CliUtilsBuilder implements Serializable {
 
     private static final long serialVersionUID = -9171290809852973775L;
@@ -130,5 +134,29 @@ public class CliUtilsBuilder implements Serializable {
 
     public CliUtils build() {
         return CliUtils.get(cmdLineSyntax, options);
+    }
+
+    @Override
+    public int hashCode() {
+        if (HashCodeUtils.resolved()) {
+            return HashCodeUtils.hashCodeAlt(null, this);
+        }
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (EqualsUtils.resolved()) {
+            return EqualsUtils.equalsAlt(null, this, obj);
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        if (ToStringUtils.resolved()) {
+            return ToStringUtils.toStringAlt(this);
+        }
+        return super.toString();
     }
 }
