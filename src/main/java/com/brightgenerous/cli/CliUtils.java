@@ -12,14 +12,17 @@ public class CliUtils implements Serializable {
 
     private static final long serialVersionUID = 8875225634485364747L;
 
-    public static boolean useful() {
-        return CliUtility.USEFUL;
+    public static boolean resolved() {
+        return CliUtility.RESOLVED;
     }
+
+    private final String cmdLineSyntax;
 
     // must be java.io.Serializable
     private final List<CliOption> options;
 
-    protected CliUtils(List<CliOption> options) {
+    protected CliUtils(String cmdLineSyntax, List<CliOption> options) {
+        this.cmdLineSyntax = cmdLineSyntax;
         if ((options == null) || options.isEmpty()) {
             this.options = new ArrayList<>();
         } else {
@@ -27,19 +30,31 @@ public class CliUtils implements Serializable {
         }
     }
 
-    public static CliUtils get(CliOption... options) {
-        return getInstance(Arrays.asList(options));
+    public static CliUtils get(String cmdLineSyntax, CliOption... options) {
+        return getInstance(cmdLineSyntax, Arrays.asList(options));
     }
 
-    public static CliUtils get(List<CliOption> options) {
-        return getInstance(options);
+    public static CliUtils get(String cmdLineSyntax, List<CliOption> options) {
+        return getInstance(cmdLineSyntax, options);
     }
 
-    protected static CliUtils getInstance(List<CliOption> options) {
-        return new CliUtils(options);
+    protected static CliUtils getInstance(String cmdLineSyntax, List<CliOption> options) {
+        return new CliUtils(cmdLineSyntax, options);
     }
 
     public ParseResult parse(String[] args) throws CliException {
         return CliUtility.parse(options, args);
+    }
+
+    public String options(List<CliOption> options) {
+        return CliUtility.options(options);
+    }
+
+    public String help() {
+        return CliUtility.help(cmdLineSyntax, options);
+    }
+
+    public String usage() {
+        return CliUtility.usage(cmdLineSyntax, options);
     }
 }

@@ -13,19 +13,16 @@ public class CliUtility {
 
     private static final Logger log = Logger.getAnonymousLogger();
 
-    public static final boolean USEFUL;
+    public static final boolean RESOLVED;
 
     private static final CliDelegater delegater;
 
-    private static final RuntimeException rex;
-
     static {
         CliDelegater tmp = null;
-        boolean useful = false;
-        RuntimeException ex = null;
+        boolean resolved = false;
         try {
-            tmp = new CliDelegaterCommons();
-            useful = true;
+            tmp = new CliDelegaterImpl();
+            resolved = true;
         } catch (NoClassDefFoundError | RuntimeException e) {
 
             if (log.isLoggable(Level.INFO)) {
@@ -37,27 +34,31 @@ public class CliUtility {
                 if ((th == null) || !(th instanceof ClassNotFoundException)) {
                     throw e;
                 }
-                ex = (RuntimeException) e;
-            } else {
-                ex = new RuntimeException(e);
             }
         }
-        USEFUL = useful;
+        if (tmp == null) {
+            tmp = new CliDelegaterSub();
+        }
+        RESOLVED = resolved;
         delegater = tmp;
-        rex = ex;
     }
 
     private CliUtility() {
     }
 
-    private static CliDelegater getDelegater() {
-        if (delegater == null) {
-            throw rex;
-        }
-        return delegater;
+    public static ParseResult parse(List<CliOption> options, String[] args) throws CliException {
+        return delegater.parse(options, args);
     }
 
-    public static ParseResult parse(List<CliOption> options, String[] args) throws CliException {
-        return getDelegater().parse(options, args);
+    public static String options(List<CliOption> options) {
+        return delegater.options(options);
+    }
+
+    public static String help(String cmdLineSyntax, List<CliOption> options) {
+        return delegater.help(cmdLineSyntax, options);
+    }
+
+    public static String usage(String cmdLineSyntax, List<CliOption> options) {
+        return delegater.usage(cmdLineSyntax, options);
     }
 }

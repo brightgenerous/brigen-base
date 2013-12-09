@@ -1,19 +1,23 @@
 package com.brightgenerous.cli.delegate;
 
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.util.List;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 import com.brightgenerous.cli.CliException;
 import com.brightgenerous.cli.CliOption;
 import com.brightgenerous.cli.ParseResult;
 
-class CliDelegaterCommons implements CliDelegater {
+class CliDelegaterImpl implements CliDelegater {
 
     {
         check();
@@ -24,8 +28,9 @@ class CliDelegaterCommons implements CliDelegater {
             Class.forName(BasicParser.class.getName());
             Class.forName(CommandLine.class.getName());
             Class.forName(CommandLineParser.class.getName());
-            Class.forName(Options.class.getName());
             Class.forName(Option.class.getName());
+            Class.forName(Options.class.getName());
+            Class.forName(ParseException.class.getName());
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -34,6 +39,59 @@ class CliDelegaterCommons implements CliDelegater {
     @Override
     public ParseResult parse(List<CliOption> options, String[] args) throws CliException {
         CommandLineParser parser = new BasicParser();
+        Options opts = convert(options);
+        CommandLine line;
+        try {
+            line = parser.parse(opts, args);
+        } catch (ParseException e) {
+            throw new CliException(e);
+        }
+        return new ParseResultImpl(line);
+    }
+
+    private static final int DEFAULT_WIDTH = HelpFormatter.DEFAULT_WIDTH;
+
+    private static final int DEFAULT_LEFT_PAD = HelpFormatter.DEFAULT_LEFT_PAD;
+
+    private static final int DEFAULT_DESC_PAD = HelpFormatter.DEFAULT_DESC_PAD;
+
+    private static final String DEFAULT_HEADER = null;
+
+    private static final String DEFAULT_FOOTER = null;
+
+    @Override
+    public String options(List<CliOption> options) {
+        Options opts = convert(options);
+        StringWriter sw = new StringWriter();
+        try (PrintWriter pw = new PrintWriter(sw)) {
+            new HelpFormatter().printOptions(pw, DEFAULT_WIDTH, opts, DEFAULT_LEFT_PAD,
+                    DEFAULT_DESC_PAD);
+        }
+        return sw.toString();
+    }
+
+    @Override
+    public String help(String cmdLineSyntax, List<CliOption> options) {
+        Options opts = convert(options);
+        StringWriter sw = new StringWriter();
+        try (PrintWriter pw = new PrintWriter(sw)) {
+            new HelpFormatter().printHelp(pw, DEFAULT_WIDTH, cmdLineSyntax, DEFAULT_HEADER, opts,
+                    DEFAULT_LEFT_PAD, DEFAULT_DESC_PAD, DEFAULT_FOOTER, true);
+        }
+        return sw.toString();
+    }
+
+    @Override
+    public String usage(String cmdLineSyntax, List<CliOption> options) {
+        Options opts = convert(options);
+        StringWriter sw = new StringWriter();
+        try (PrintWriter pw = new PrintWriter(sw)) {
+            new HelpFormatter().printUsage(pw, DEFAULT_WIDTH, cmdLineSyntax, opts);
+        }
+        return sw.toString();
+    }
+
+    private Options convert(List<CliOption> options) {
         Options opts = new Options();
         if ((options != null) && !options.isEmpty()) {
             for (CliOption option : options) {
@@ -59,22 +117,16 @@ class CliDelegaterCommons implements CliDelegater {
                 opts.addOption(opt);
             }
         }
-        CommandLine line;
-        try {
-            line = parser.parse(opts, args);
-        } catch (org.apache.commons.cli.ParseException e) {
-            throw new CliException(e);
-        }
-        return new ParseResultCommons(line);
+        return opts;
     }
 
-    static class ParseResultCommons implements ParseResult, Serializable {
+    static class ParseResultImpl implements ParseResult, Serializable {
 
         private static final long serialVersionUID = 4178476031707976593L;
 
         private final CommandLine commandLine;
 
-        public ParseResultCommons(CommandLine commandLine) {
+        public ParseResultImpl(CommandLine commandLine) {
             this.commandLine = commandLine;
         }
 

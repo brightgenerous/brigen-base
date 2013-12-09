@@ -23,27 +23,57 @@ I represent the Acknowledgements
           org.apache.commons.lang3.time.DateUtils
         License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$AlreadySelectedException
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$BasicParser
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$CommandLine
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$CommandLineParser
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$HelpFormatter
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$MissingArgumentException
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$MissingOptionException
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$Option
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$OptionBuilder
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$OptionGroup
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$Options
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$OptionValidator
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$ParseException
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$Parser
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$PatternOptionBuilder
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$TypeHandler
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$UnrecognizedOptionException
+  - com.brightgenerous.cli.delegate.org$apache$commons$cli$Util
+      from
+        groupId: commons-cli
+        artifactId: commons-cli
+        version: 1.2
+          org.apache.commons.cli.AlreadySelectedException
+          org.apache.commons.cli.BasicParser
+          org.apache.commons.cli.CommandLine
+          org.apache.commons.cli.CommandLineParser
+          org.apache.commons.cli.HelpFormatter
+          org.apache.commons.cli.MissingArgumentException
+          org.apache.commons.cli.MissingOptionException
+          org.apache.commons.cli.Option
+          org.apache.commons.cli.OptionBuilder
+          org.apache.commons.cli.OptionGroup
+          org.apache.commons.cli.Options
+          org.apache.commons.cli.OptionValidator
+          org.apache.commons.cli.ParseException
+          org.apache.commons.cli.Parser
+          org.apache.commons.cli.PatternOptionBuilder
+          org.apache.commons.cli.TypeHandler
+          org.apache.commons.cli.UnrecognizedOptionException
+          org.apache.commons.cli.Util
+        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
   - com.brightgenerous.lucene.delegate.org$apache$lucene$search$spell$StringDistance
-      from
-        groupId: org.apache.lucene
-        artifactId: lucene-spellchecker
-        version: 3.6.2
-          org.apache.lucene.search.spell.StringDistance
-        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-
   - com.brightgenerous.lucene.delegate.org$apache$lucene$search$spell$LevensteinDistance
-      from
-        groupId: org.apache.lucene
-        artifactId: lucene-spellchecker
-        version: 3.6.2
-          org.apache.lucene.search.spell.LevensteinDistance
-        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-
   - com.brightgenerous.lucene.delegate.org$apache$lucene$search$spell$JaroWinklerDistance
       from
         groupId: org.apache.lucene
         artifactId: lucene-spellchecker
         version: 3.6.2
+          org.apache.lucene.search.spell.StringDistance
+          org.apache.lucene.search.spell.LevensteinDistance
           org.apache.lucene.search.spell.JaroWinklerDistance
         License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -56,26 +86,14 @@ I represent the Acknowledgements
        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
   - com.brightgenerous.zxing.deleg.javase.com$google$zxing$client$j2se$BufferedImageLuminanceSource
-      from
-       groupId: com.google.zxing
-       artifactId: javase
-       version: 2.2
-         com.google.zxing.client.j2se.BufferedImageLuminanceSource
-       License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-
   - com.brightgenerous.zxing.deleg.javase.com$google$zxing$client$j2se$MatrixToImageConfig
-      from
-       groupId: com.google.zxing
-       artifactId: javase
-       version: 2.2
-         com.google.zxing.client.j2se.MatrixToImageConfig
-       License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-
   - com.brightgenerous.zxing.deleg.javase.com$google$zxing$client$j2se$MatrixToImageWriter
       from
        groupId: com.google.zxing
        artifactId: javase
        version: 2.2
+         com.google.zxing.client.j2se.BufferedImageLuminanceSource
+         com.google.zxing.client.j2se.MatrixToImageConfig
          com.google.zxing.client.j2se.MatrixToImageWriter
        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -88,26 +106,14 @@ I represent the Acknowledgements
        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
   - com.brightgenerous.csv.delegate.au$com$bytecode$opencsv$CSVParser
-      from
-       groupId: net.sf.opencsv
-       artifactId: opencsv
-       version: 2.3
-         au.com.bytecode.opencsv.CSVParser
-       License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-
   - com.brightgenerous.csv.delegate.au$com$bytecode$opencsv$CSVReader
-      from
-       groupId: net.sf.opencsv
-       artifactId: opencsv
-       version: 2.3
-         au.com.bytecode.opencsv.CSVReader
-       License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-
   - com.brightgenerous.csv.delegate.au$com$bytecode$opencsv$CSVWriter
       from
        groupId: net.sf.opencsv
        artifactId: opencsv
        version: 2.3
+         au.com.bytecode.opencsv.CSVParser
+         au.com.bytecode.opencsv.CSVReader
          au.com.bytecode.opencsv.CSVWriter
        License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 

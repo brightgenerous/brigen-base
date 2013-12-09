@@ -42,6 +42,9 @@ public class PDFBoxUtils {
         if (!file.canRead()) {
             return false;
         }
+        if (file.isDirectory()) {
+            return false;
+        }
 
         boolean ret = false;
         try {

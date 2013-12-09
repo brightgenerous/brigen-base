@@ -9,4 +9,10 @@ import com.brightgenerous.cli.ParseResult;
 interface CliDelegater {
 
     ParseResult parse(List<CliOption> options, String[] args) throws CliException;
+
+    String options(List<CliOption> options);
+
+    String help(String cmdLineSyntax, List<CliOption> options);
+
+    String usage(String cmdLineSyntax, List<CliOption> options);
 }

@@ -1,9 +1,14 @@
 package com.brightgenerous.cli;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CliUtilsBuilder {
+public class CliUtilsBuilder implements Serializable {
+
+    private static final long serialVersionUID = -9171290809852973775L;
+
+    private String cmdLineSyntax;
 
     private String opt;
 
@@ -21,6 +26,7 @@ public class CliUtilsBuilder {
 
     private Character valueSeparator;
 
+    // must be java.io.Serializable
     private final List<CliOption> options = new ArrayList<>();
 
     protected CliUtilsBuilder() {
@@ -31,8 +37,22 @@ public class CliUtilsBuilder {
     }
 
     public CliUtilsBuilder clear() {
+        cmdLineSyntax = null;
         options.clear();
         return this;
+    }
+
+    public String cmdLineSyntax() {
+        return cmdLineSyntax;
+    }
+
+    public CliUtilsBuilder cmdLineSyntax(String cmdLineSyntax) {
+        this.cmdLineSyntax = cmdLineSyntax;
+        return this;
+    }
+
+    public String opt() {
+        return opt;
     }
 
     public CliUtilsBuilder opt(String opt) {
@@ -40,9 +60,17 @@ public class CliUtilsBuilder {
         return this;
     }
 
+    public String longOpt() {
+        return longOpt;
+    }
+
     public CliUtilsBuilder longOpt(String longOpt) {
         this.longOpt = longOpt;
         return this;
+    }
+
+    public Integer args() {
+        return args;
     }
 
     public CliUtilsBuilder args(Integer args) {
@@ -50,9 +78,17 @@ public class CliUtilsBuilder {
         return this;
     }
 
+    public Boolean required() {
+        return required;
+    }
+
     public CliUtilsBuilder required(Boolean required) {
         this.required = required;
         return this;
+    }
+
+    public Boolean optionalArg() {
+        return optionalArg;
     }
 
     public CliUtilsBuilder optionalArg(Boolean optionalArg) {
@@ -60,9 +96,17 @@ public class CliUtilsBuilder {
         return this;
     }
 
+    public String description() {
+        return description;
+    }
+
     public CliUtilsBuilder description(String description) {
         this.description = description;
         return this;
+    }
+
+    public Character valueSeparator() {
+        return valueSeparator;
     }
 
     public CliUtilsBuilder valueSeparator(Character valueSeparator) {
@@ -85,6 +129,6 @@ public class CliUtilsBuilder {
     }
 
     public CliUtils build() {
-        return CliUtils.get(options);
+        return CliUtils.get(cmdLineSyntax, options);
     }
 }
